@@ -1,4 +1,3 @@
-// Components
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
@@ -8,7 +7,7 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
+import AuthLayout from '@/layouts/auth/reboot-auth-layout';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -22,40 +21,55 @@ export default function ForgotPassword({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Forgot password" description="Enter your email to receive a password reset link">
-            <Head title="Forgot password" />
+        <AuthLayout title="Wachtwoord vergeten?" description="Vul het e-mailadres van je account in om een resetlink aan te vragen.">
+            <Head title="Wachtwoord vergeten | Reboot" />
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div role="status" className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                    {status}
+                </div>
+            )}
 
             <div className="space-y-6">
                 <form onSubmit={submit}>
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label className="text-sm font-medium" htmlFor="email">
+                            E-mailadres
+                        </Label>
                         <Input
+                            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-[#111827] placeholder:text-slate-400 focus-visible:ring-emerald-600"
                             id="email"
+                            aria-invalid={!!errors.email}
+                            aria-describedby={errors.email ? 'email-error' : undefined}
                             type="email"
                             name="email"
-                            autoComplete="off"
+                            autoComplete="email"
+                            required
                             value={data.email}
-                            autoFocus
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
+                            placeholder="jij@example.test"
                         />
 
-                        <InputError message={errors.email} />
+                        <InputError id="email-error" message={errors.email} />
                     </div>
 
                     <div className="my-6 flex items-center justify-start">
-                        <Button className="w-full" disabled={processing}>
+                        <Button
+                            type="submit"
+                            className="h-12 w-full rounded-xl bg-[#10B981] text-base font-semibold text-[#111827] hover:bg-emerald-400 focus-visible:ring-emerald-600"
+                            disabled={processing}
+                        >
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Email password reset link
+                            {processing ? 'Aanvragen...' : 'Resetlink aanvragen'}
                         </Button>
                     </div>
                 </form>
 
-                <div className="text-muted-foreground space-x-1 text-center text-sm">
-                    <span>Or, return to</span>
-                    <TextLink href={route('login')}>log in</TextLink>
+                <div className="mt-8 space-x-1 border-t border-slate-200 pt-7 text-center text-sm text-slate-500">
+                    <span>Weet je je wachtwoord weer?</span>
+                    <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('login')}>
+                        Terug naar inloggen
+                    </TextLink>
                 </div>
             </div>
         </AuthLayout>

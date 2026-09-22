@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia;
 
 test('login screen can be rendered', function () {
     $response = $this->get('/login');
@@ -23,10 +24,20 @@ test('users can authenticate using the login screen', function () {
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $response = $this->from('/login')->post('/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
+
+    $response->assertRedirect('/login');
+    $response->assertSessionHasErrors([
+        'password' => 'E-mailadres of wachtwoord is onjuist.',
+    ]);
+
+    $this->get('/login')->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('auth/login')
+        ->where('errors.password', 'E-mailadres of wachtwoord is onjuist.')
+    );
 
     $this->assertGuest();
 });

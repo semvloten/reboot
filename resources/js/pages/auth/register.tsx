@@ -7,14 +7,14 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
+import AuthLayout from '@/layouts/auth/reboot-auth-layout';
 
-interface RegisterForm {
+type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
-}
+};
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<RegisterForm>({
@@ -32,85 +32,108 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Create an account" description="Enter your details below to create your account">
-            <Head title="Register" />
+        <AuthLayout title="Maak je account aan." description="Meld je aan bij Reboot en geef jouw apparaten een tweede leven.">
+            <Head title="Registreren | Reboot" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label className="text-sm font-medium" htmlFor="name">
+                            Naam
+                        </Label>
                         <Input
+                            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-[#111827] placeholder:text-slate-400 focus-visible:ring-emerald-600"
                             id="name"
+                            name="name"
+                            aria-invalid={!!errors.name}
+                            aria-describedby={errors.name ? 'name-error' : undefined}
                             type="text"
                             required
-                            autoFocus
-                            tabIndex={1}
                             autoComplete="name"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
-                            placeholder="Full name"
+                            placeholder="Je volledige naam"
                         />
-                        <InputError message={errors.name} className="mt-2" />
+                        <InputError id="name-error" message={errors.name} className="mt-2" />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label className="text-sm font-medium" htmlFor="email">
+                            E-mailadres
+                        </Label>
                         <Input
+                            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-[#111827] placeholder:text-slate-400 focus-visible:ring-emerald-600"
                             id="email"
+                            name="email"
+                            aria-invalid={!!errors.email}
+                            aria-describedby={errors.email ? 'email-error' : undefined}
                             type="email"
                             required
-                            tabIndex={2}
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
-                            placeholder="email@example.com"
+                            placeholder="jij@example.test"
                         />
-                        <InputError message={errors.email} />
+                        <InputError id="email-error" message={errors.email} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label className="text-sm font-medium" htmlFor="password">
+                            Wachtwoord
+                        </Label>
                         <Input
+                            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-[#111827] placeholder:text-slate-400 focus-visible:ring-emerald-600"
                             id="password"
+                            name="password"
+                            aria-invalid={!!errors.password}
+                            aria-describedby={errors.password ? 'password-error' : undefined}
                             type="password"
                             required
-                            tabIndex={3}
                             autoComplete="new-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
-                            placeholder="Password"
+                            placeholder="Kies een wachtwoord"
                         />
-                        <InputError message={errors.password} />
+                        <InputError id="password-error" message={errors.password} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
+                        <Label className="text-sm font-medium" htmlFor="password_confirmation">
+                            Bevestig wachtwoord
+                        </Label>
                         <Input
+                            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-[#111827] placeholder:text-slate-400 focus-visible:ring-emerald-600"
                             id="password_confirmation"
+                            name="password_confirmation"
+                            aria-invalid={!!errors.password_confirmation}
+                            aria-describedby={errors.password_confirmation ? 'password_confirmation-error' : undefined}
                             type="password"
                             required
-                            tabIndex={4}
                             autoComplete="new-password"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
-                            placeholder="Confirm password"
+                            placeholder="Herhaal je wachtwoord"
                         />
-                        <InputError message={errors.password_confirmation} />
+                        <InputError id="password_confirmation-error" message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button
+                        type="submit"
+                        className="h-12 w-full rounded-xl bg-[#10B981] text-base font-semibold text-[#111827] hover:bg-emerald-400 focus-visible:ring-emerald-600"
+                        disabled={processing}
+                    >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Create account
+                        {processing ? 'Account aanmaken...' : 'Account aanmaken'}
                     </Button>
                 </div>
 
-                <div className="text-muted-foreground text-center text-sm">
-                    Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
-                        Log in
+                <div className="mt-8 border-t border-slate-200 pt-7 text-center text-sm text-slate-500">
+                    Heb je al een account?{' '}
+                    <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('login')}>
+                        Inloggen
                     </TextLink>
                 </div>
             </form>
