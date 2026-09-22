@@ -5,6 +5,7 @@ import { FormEventHandler } from 'react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth/reboot-auth-layout';
@@ -14,26 +15,50 @@ type RegisterForm = {
     email: string;
     password: string;
     password_confirmation: string;
+    is_inspector: boolean;
 };
 
-export default function Register() {
+interface RegisterProps {
+    canCreateInspector: boolean;
+    status?: string;
+}
+
+export default function Register({ canCreateInspector, status }: RegisterProps) {
     const { data, setData, post, processing, errors, reset } = useForm<RegisterForm>({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        is_inspector: false,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
+            onSuccess: () => {
+                if (canCreateInspector) {
+                    reset();
+                }
+            },
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
     return (
-        <AuthLayout title="Maak je account aan." description="Meld je aan bij Reboot en geef jouw apparaten een tweede leven.">
+        <AuthLayout
+            title={canCreateInspector ? 'Maak een account aan.' : 'Maak je account aan.'}
+            description={
+                canCreateInspector
+                    ? 'Maak een klantaccount of een account voor een keurmeester aan.'
+                    : 'Meld je aan bij Reboot en geef jouw apparaten een tweede leven.'
+            }
+        >
             <Head title="Registreren | Reboot" />
+            {status && (
+                <div role="status" className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                    {status}
+                </div>
+            )}
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
@@ -120,6 +145,27 @@ export default function Register() {
                         <InputError id="password_confirmation-error" message={errors.password_confirmation} />
                     </div>
 
+                    {canCreateInspector && (
+                        <div className="grid gap-2">
+                            <div className="flex items-center gap-2.5">
+                                <Checkbox
+                                    id="is_inspector"
+                                    name="is_inspector"
+                                    checked={data.is_inspector}
+                                    onCheckedChange={(checked) => setData('is_inspector', checked === true)}
+                                    disabled={processing}
+                                    aria-invalid={!!errors.is_inspector}
+                                    aria-describedby={errors.is_inspector ? 'is-inspector-error' : undefined}
+                                    className="border-slate-300 data-[state=checked]:border-emerald-700 data-[state=checked]:bg-emerald-700 data-[state=checked]:text-white"
+                                />
+                                <Label htmlFor="is_inspector" className="cursor-pointer text-sm font-normal text-slate-600">
+                                    Maak dit account een keurmeester
+                                </Label>
+                            </div>
+                            <InputError id="is-inspector-error" message={errors.is_inspector} />
+                        </div>
+                    )}
+
                     <Button
                         type="submit"
                         className="h-12 w-full rounded-xl bg-[#10B981] text-base font-semibold text-[#111827] hover:bg-emerald-400 focus-visible:ring-emerald-600"
@@ -131,10 +177,18 @@ export default function Register() {
                 </div>
 
                 <div className="mt-8 border-t border-slate-200 pt-7 text-center text-sm text-slate-500">
-                    Heb je al een account?{' '}
-                    <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('login')}>
-                        Inloggen
-                    </TextLink>
+                    {canCreateInspector ? (
+                        <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('dashboard')}>
+                            Terug naar dashboard
+                        </TextLink>
+                    ) : (
+                        <>
+                            Heb je al een account?{' '}
+                            <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('login')}>
+                                Inloggen
+                            </TextLink>
+                        </>
+                    )}
                 </div>
             </form>
         </AuthLayout>

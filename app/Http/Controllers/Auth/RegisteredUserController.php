@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,34 +19,53 @@ class RegisteredUserController extends Controller
     /**
      * Show the registration page.
      */
-    public function create(): Response
+    public function create(Request $request): Response|RedirectResponse
     {
-        return Inertia::render('auth/register');
+        if ($request->user() && $request->user()->role !== 'inspector') {
+            return to_route('dashboard');
+        }
+
+        return Inertia::render('auth/register', [
+            'canCreateInspector' => $request->user()?->role === 'inspector',
+            'status' => $request->session()->get('status'),
+        ]);
     }
 
     /**
      * Handle an incoming registration request.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
+        $canCreateInspector = $request->user()?->role === 'inspector';
+
+        abort_if($request->user() && ! $canCreateInspector, 403);
+        abort_if($request->boolean('is_inspector') && ! $canCreateInspector, 403);
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'is_inspector' => ['sometimes', 'boolean'],
         ], [
             'password.min' => 'Je wachtwoord moet minimaal :min tekens bevatten.',
             'password.confirmed' => 'De wachtwoorden komen niet overeen.',
         ]);
 
-        $user = User::create([
+        $user = new User([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $user->role = $canCreateInspector && $request->boolean('is_inspector') ? 'inspector' : 'customer';
+        $user->save();
 
         event(new Registered($user));
+
+        if ($canCreateInspector) {
+            return to_route('register')->with('status', 'Het account is aangemaakt.');
+        }
 
         Auth::login($user);
 
