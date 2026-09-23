@@ -46,6 +46,7 @@ export default function Register({ canCreateInspector, status }: RegisterProps) 
 
     return (
         <AuthLayout
+            showBackLink={false}
             title={canCreateInspector ? 'Maak een account aan.' : 'Maak je account aan.'}
             description={
                 canCreateInspector
