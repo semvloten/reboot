@@ -48,5 +48,13 @@ test('users can logout', function () {
     $response = $this->actingAs($user)->post('/logout');
 
     $this->assertGuest();
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('login'));
+});
+
+test('signed in inspectors return to the dashboard from login and home', function () {
+    $user = User::factory()->create(['role' => 'inspector']);
+
+    $this->actingAs($user)->get('/login')->assertRedirect(route('dashboard'));
+    $this->get('/')->assertRedirect(route('dashboard'));
+    $this->get('/dashboard')->assertOk();
 });
