@@ -188,3 +188,62 @@ Before relying on a package's API, confirm its installed version:
 - IMPORTANT: Activate `inertia-react-development` when working with Inertia React client-side patterns.
 
 </laravel-boost-guidelines>
+IMPORTANT>>>>>>
+No need to write test or build thing only if asked
+
+<<<<<<<>>>>>
+Projectnaam
+Reboot
+Datum
+25 augustus 2026
+Opdrachtgever
+Elektronicawinkel Circuit Renew
+Contactpersoon
+Mevr. M. Smit (E-commerce manager)
+Complexiteit
+Medium
+1. Achtergrond en probleem
+Circuit Renew koopt gebruikte elektronica in en verkoopt deze na controle. Aanbiedingen komen nu via e-mail binnen en de keuringsstatus is voor klanten onduidelijk.
+
+De winkel wil apparaten laten aanmelden, keuringen registreren en pas goedgekeurde producten in de webshop tonen.
+
+2. Doelstelling
+De opdrachtgever wil een eerste werkende versie (MVP) laten maken onder de naam Reboot. Het eindproduct moet het beschreven proces overzichtelijker, betrouwbaarder en veiliger maken.
+
+De eerste versie is goed wanneer de belangrijkste gebruikers hun taken kunnen uitvoeren, de gegevens goed worden opgeslagen en iedere gebruiker alleen ziet wat bij zijn rol hoort.
+
+Belangrijk aandachtspunt
+Een keuring vastleggen en alleen goedgekeurde apparaten in de winkel tonen.
+3. Doelgroepen
+Verkoper/koper
+meldt een apparaat aan, volgt de keuring en reserveert goedgekeurde producten.
+Keurmeester
+beoordeelt apparaten, legt testresultaten vast en beheert verkoopstatus.
+4. Gewenste functies
+Voor de eerste versie zijn dit de belangrijkste functies. De opdrachtgever wil deze onderdelen in ieder geval terugzien.
+
+Voor klanten
+Account maken en eigen apparaten aanmelden.
+Merk, model, conditie, accessoires en vraagprijs invoeren.
+Status en keuringsopmerkingen van eigen apparaten volgen.
+Voor keurmeesters
+Aanmeldingen prioriteren en toewijzen.
+Checklist voor batterij, scherm, aansluitingen en reset invullen.
+Apparaat goedkeuren, afwijzen of herstel nodig geven.
+Algemeen
+Een serienummer mag maar één actief apparaat hebben.
+Afgekeurde producten nooit openbaar tonen.
+5. Technische wensen en voorwaarden
+De oplossing is een webapp die goed werkt op telefoon, tablet en computer.
+PHP 8+ met MySQL/MariaDB past bij deze opdracht. Laravel en een frontend-framework mogen worden gebruikt, maar dat is niet verplicht.
+Er zijn verschillende soorten accounts. Iedere gebruiker mag alleen zien en doen wat bij zijn rol hoort.
+Wachtwoorden worden veilig opgeslagen. De app controleert ingevulde gegevens en toont teksten op een veilige manier.
+De code wordt duidelijk verdeeld in onderdelen met namen die goed te begrijpen zijn.
+De app geeft duidelijke meldingen bij succes, fouten, lege resultaten en acties die niet zijn toegestaan.
+Een serienummer mag maar één keer actief zijn.
+Toon een apparaat pas in de winkel nadat het is goedgekeurd.
+Nog niet nodig voor de eerste versie
+Online betalingen en koppelingen met echte betaalproviders.
+Een verplichte koppeling met een externe API, tenzij dit later als uitbreiding wordt gekozen.
+De app openbaar aanbieden en werken met echte persoonsgegevens.
+Extra functies die niet in deze eerste versie zijn beschreven.
