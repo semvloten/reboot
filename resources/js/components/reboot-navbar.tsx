@@ -33,7 +33,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     asChild
                     variant="outline"
                     size="sm"
-                    className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#60A5FA]"
+                    className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
                 >
                     <Link href={route('login')}>Login</Link>
                 </Button>
@@ -43,10 +43,30 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     asChild
                     variant="outline"
                     size="sm"
-                    className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#60A5FA]"
+                    className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
                 >
                     <Link href={route('dashboard')}>Dashboard</Link>
                 </Button>
+            )}
+            {auth.user?.role === 'customer' && (
+                <>
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
+                    >
+                        <Link href={route('devices.index')}>Mijn apparaten</Link>
+                    </Button>
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
+                    >
+                        <Link href={route('devices.create')}>Apparaat toevoegen</Link>
+                    </Button>
+                </>
             )}
             {(canShowRegister || canShowLogout) && (
                 <DropdownMenu>
@@ -55,7 +75,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="ml-auto h-12 rounded-xl border-[#111827]/10 bg-white px-4 text-[#111827] hover:bg-[#60A5FA]/15 hover:text-[#111827] focus-visible:ring-[#60A5FA]"
+                            className="ml-auto h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
                         >
                             Meer opties
                             <ChevronDown className="size-4" aria-hidden="true" />
@@ -63,12 +83,12 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="rounded-xl border-[#111827]/10 bg-[#F3F4F6] p-1.5 text-[#111827]">
                         {canShowRegister && (
-                            <DropdownMenuItem asChild className="min-h-11 rounded-lg px-3 focus:bg-[#60A5FA]/20 focus:text-[#111827]">
+                            <DropdownMenuItem asChild className="min-h-11 rounded-lg px-3 focus:bg-[#10B981]/20 focus:text-[#111827]">
                                 <Link href={route('register')}>Regristreer nieuw account</Link>
                             </DropdownMenuItem>
                         )}
                         {canShowLogout && (
-                            <DropdownMenuItem asChild className="min-h-11 rounded-lg px-3 focus:bg-[#60A5FA]/20 focus:text-[#111827]">
+                            <DropdownMenuItem asChild className="min-h-11 rounded-lg px-3 focus:bg-[#10B981]/20 focus:text-[#111827]">
                                 <Link href={route('logout')} method="post" as="button" className="w-full">
                                     Uitloggen
                                 </Link>
