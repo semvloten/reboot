@@ -26,10 +26,10 @@ class DeviceController extends Controller
             'devices' => Device::query()
                 ->where('user_id', $request->user()->id)
                 ->latest('id')
-                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'photos'])
+                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'photos', 'status'])
                 ->map(function (Device $device): array {
                     return [
-                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price']),
+                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status']),
                         'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
                     ];
                 }),

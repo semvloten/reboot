@@ -6,6 +6,7 @@ interface Device {
     type: string;
     brand: string;
     model: string;
+    status: string;
     serial_number: string;
     condition: string;
     accessories: string | null;
@@ -30,11 +31,13 @@ export default function Devices({ devices }: { devices: Device[] }) {
                         <table className="w-full text-left text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
-                                    {['Foto', 'Type', 'Merk', 'Model', 'Serienummer', 'Conditie', 'Accessoires', 'Vraagprijs'].map((label) => (
-                                        <th key={label} scope="col" className="p-3">
-                                            {label}
-                                        </th>
-                                    ))}
+                                    {['Foto', 'Type', 'Merk', 'Model', 'Serienummer', 'Conditie', 'Accessoires', 'Vraagprijs', 'Status'].map(
+                                        (label) => (
+                                            <th key={label} scope="col" className="p-3">
+                                                {label}
+                                            </th>
+                                        ),
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,6 +63,23 @@ export default function Devices({ devices }: { devices: Device[] }) {
                                         <td className="p-3">{device.accessories || 'Geen'}</td>
                                         <td className="p-3 whitespace-nowrap">
                                             {Number(device.asking_price).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}
+                                        </td>
+                                        <td className="p-3">
+                                            <span
+                                                className={`inline-block rounded-md px-3 py-1 font-medium text-white ${
+                                                    device.status === 'afgekeurd'
+                                                        ? 'bg-red-500'
+                                                        : device.status === 'onderhoud nodig'
+                                                          ? 'bg-orange-500'
+                                                          : device.status === 'goedgekeurd'
+                                                            ? 'bg-green-500'
+                                                            : device.status === 'in behandeling'
+                                                              ? 'bg-blue-500'
+                                                              : 'bg-gray-500'
+                                                }`}
+                                            >
+                                                {device.status}
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}
