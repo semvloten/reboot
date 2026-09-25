@@ -3,16 +3,16 @@
 use App\Http\Controllers\DeviceController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return to_route('dashboard');
     })->name('home');
 
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', fn () => to_route('shop.index'))->name('dashboard');
+    Route::get('/winkel', [DeviceController::class, 'shop'])->name('shop.index');
+    Route::get('/winkel/{device}/foto', [DeviceController::class, 'shopPhoto'])->name('shop.photo');
+    Route::get('/winkel/{device}', [DeviceController::class, 'shopShow'])->name('shop.show');
 
     Route::get('/db-test', function () {
         $userCount = User::count();

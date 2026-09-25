@@ -18,6 +18,44 @@ use Throwable;
 
 class DeviceController extends Controller
 {
+    public function shop(): Response
+    {
+        return Inertia::render('dashboard', [
+            'devices' => Device::query()
+                ->whereIn('status', ['goedgekeurd', 'gereserveerd'])
+                ->orderBy('asking_price')
+                ->get(['id', 'type', 'brand', 'model', 'condition', 'accessories', 'asking_price', 'status', 'photos'])
+                ->map(function (Device $device): array {
+                    return [
+                        ...$device->only(['id', 'type', 'brand', 'model', 'condition', 'accessories', 'asking_price', 'status']),
+                        'photo_url' => ! empty($device->photos) ? route('shop.photo', $device) : null,
+                    ];
+                }),
+        ]);
+    }
+
+    public function shopShow(Device $device): Response
+    {
+        abort_unless($device->status === 'goedgekeurd', 404);
+
+        return Inertia::render('devices/product', [
+            'device' => $device->only(['id', 'brand', 'model']),
+        ]);
+    }
+
+    public function shopPhoto(Device $device): StreamedResponse
+    {
+        abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
+
+        $path = $device->photos[0] ?? null;
+        abort_unless($path && Storage::disk('local')->exists($path), 404);
+
+        return Storage::disk('local')->response($path, null, [
+            'Cache-Control' => 'private, no-store',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
     public function inspectorIndex(): Response
     {
         return Inertia::render('devices/inspector', [

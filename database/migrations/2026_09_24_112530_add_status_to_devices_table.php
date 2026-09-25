@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (! Schema::hasColumn('devices', 'status')) {
             Schema::table('devices', function (Blueprint $table): void {
-                $table->enum('status', ['afgekeurd', 'in behandeling', 'goedgekeurd', 'onderhoud nodig'])->default('in behandeling');
+                $table->enum('status', ['afgekeurd', 'in behandeling', 'goedgekeurd', 'onderhoud nodig', 'gereserveerd'])->default('in behandeling');
             });
         }
     }
