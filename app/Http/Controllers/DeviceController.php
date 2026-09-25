@@ -18,6 +18,32 @@ use Throwable;
 
 class DeviceController extends Controller
 {
+    public function inspectorIndex(): Response
+    {
+        return Inertia::render('devices/inspector', [
+            'devices' => Device::query()
+                ->with('user:id,name')
+                ->whereIn('status', ['in behandeling', 'onderhoud nodig', 'goedgekeurd', 'afgekeurd'])
+                ->latest('id')
+                ->get()
+                ->map(function (Device $device): array {
+                    return [
+                        ...$device->only(['id', 'user_id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'created_at', 'updated_at']),
+                        'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
+                        'photo_count' => count($device->photos ?? []),
+                        'customer_name' => $device->user?->name,
+                    ];
+                }),
+        ]);
+    }
+
+    public function inspect(Device $device): Response
+    {
+        return Inertia::render('devices/inspect', [
+            'device' => $device->only(['id', 'brand', 'model']),
+        ]);
+    }
+
     public function index(Request $request): Response
     {
         abort_unless($request->user()->role === 'customer', 403);
@@ -38,7 +64,7 @@ class DeviceController extends Controller
 
     public function photo(Request $request, Device $device): StreamedResponse
     {
-        abort_unless($request->user()->role === 'customer' && $device->user_id === $request->user()->id, 404);
+        abort_unless($request->user()->role === 'inspector' || ($request->user()->role === 'customer' && $device->user_id === $request->user()->id), 404);
 
         $path = $device->photos[0] ?? null;
         abort_unless($path && Storage::disk('local')->exists($path), 404);

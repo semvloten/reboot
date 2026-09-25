@@ -6,23 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('devices', function (Blueprint $table) {
-            //
-        });
+        if (! Schema::hasColumn('devices', 'status')) {
+            Schema::table('devices', function (Blueprint $table): void {
+                $table->enum('status', ['afgekeurd', 'in behandeling', 'goedgekeurd', 'onderhoud nodig'])->default('in behandeling');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('devices', function (Blueprint $table) {
-            //
+        Schema::table('devices', function (Blueprint $table): void {
+            $table->dropColumn('status');
         });
     }
 };

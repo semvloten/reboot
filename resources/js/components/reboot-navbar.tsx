@@ -48,6 +48,16 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     <Link href={route('dashboard')}>Dashboard</Link>
                 </Button>
             )}
+            {auth.user?.role === 'inspector' && (
+                <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
+                >
+                    <Link href={route('inspector.devices.index')}>Apparaten keuren</Link>
+                </Button>
+            )}
             {auth.user?.role === 'customer' && (
                 <>
                     <Button

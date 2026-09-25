@@ -22,9 +22,11 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 
-    Route::middleware('inspector')->get('/inspector', function () {
-        return 'Keurmeesterpaneel';
-    })->name('inspector');
+    Route::middleware('inspector')->group(function () {
+        Route::get('/inspector', fn () => to_route('inspector.devices.index'))->name('inspector');
+        Route::get('/apparaten-keuren-overzicht', [DeviceController::class, 'inspectorIndex'])->name('inspector.devices.index');
+        Route::get('/apparaten-keuren/{device}', [DeviceController::class, 'inspect'])->name('inspector.devices.inspect');
+    });
 
     Route::get('/mijn-apparaten/{device}/foto', [DeviceController::class, 'photo'])->name('devices.photo');
     Route::get('/mijn-apparaten', [DeviceController::class, 'index'])->name('devices.index');

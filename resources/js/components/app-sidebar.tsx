@@ -37,7 +37,9 @@ export function AppSidebar() {
                   { title: 'Mijn apparaten', url: route('devices.index'), icon: LayoutGrid },
                   { title: 'Apparaat aanmelden', url: route('devices.create'), icon: PlusCircle },
               ]
-            : mainNavItems;
+            : auth.user?.role === 'inspector'
+              ? [...mainNavItems, { title: 'Apparaten keuren', url: route('inspector.devices.index'), icon: LayoutGrid }]
+              : mainNavItems;
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
