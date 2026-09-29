@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InspectDeviceRequest;
 use App\Http\Requests\StoreDeviceRequest;
 use App\Models\Device;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -119,11 +120,35 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function inspect(Device $device): Response
+    public function inspect(Request $request, Device $device): Response
     {
+        abort_if($device->status === 'gereserveerd', 409, 'Een gereserveerd apparaat kan niet opnieuw worden gekeurd.');
+
         return Inertia::render('devices/inspect', [
-            'device' => $device->only(['id', 'brand', 'model']),
+            'device' => [
+                ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'created_at', 'inspection']),
+                'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
+            ],
+            'status' => $request->session()->get('status'),
         ]);
+    }
+
+    public function updateInspection(InspectDeviceRequest $request, Device $device): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $device): void {
+            $lockedDevice = Device::query()->lockForUpdate()->findOrFail($device->id);
+            if ($lockedDevice->status === 'gereserveerd' || $lockedDevice->reserved_by_user_id !== null) {
+                throw ValidationException::withMessages(['status' => 'Dit apparaat is inmiddels gereserveerd en kan niet opnieuw worden gekeurd.']);
+            }
+
+            $lockedDevice->status = $request->validated('status');
+            $lockedDevice->inspection = $request->safe()->except('status');
+            $lockedDevice->inspected_by_user_id = $request->user()->id;
+            $lockedDevice->inspected_at = now();
+            $lockedDevice->save();
+        });
+
+        return to_route('inspector.devices.inspect', $device)->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
     }
 
     public function index(Request $request): Response

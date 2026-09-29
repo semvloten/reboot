@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/inspector', fn () => to_route('inspector.devices.index'))->name('inspector');
         Route::get('/apparaten-keuren-overzicht', [DeviceController::class, 'inspectorIndex'])->name('inspector.devices.index');
         Route::get('/apparaten-keuren/{device}', [DeviceController::class, 'inspect'])->name('inspector.devices.inspect');
+        Route::patch('/apparaten-keuren/{device}', [DeviceController::class, 'updateInspection'])->name('inspector.devices.update');
     });
 
     Route::get('/mijn-apparaten/{device}/foto', [DeviceController::class, 'photo'])->name('devices.photo');
