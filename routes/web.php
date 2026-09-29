@@ -12,6 +12,8 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', fn () => to_route('shop.index'))->name('dashboard');
     Route::get('/winkel', [DeviceController::class, 'shop'])->name('shop.index');
     Route::get('/winkel/{device}/foto', [DeviceController::class, 'shopPhoto'])->name('shop.photo');
+    Route::get('/winkel/{device}/betalen', [DeviceController::class, 'checkout'])->name('shop.checkout');
+    Route::post('/winkel/{device}/reserveren', [DeviceController::class, 'reserve'])->name('shop.reserve');
     Route::get('/winkel/{device}', [DeviceController::class, 'shopShow'])->name('shop.show');
 
     Route::get('/db-test', function () {

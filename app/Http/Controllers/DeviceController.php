@@ -34,20 +34,64 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function shopShow(Device $device): Response
-    {
-        abort_unless($device->status === 'goedgekeurd', 404);
-
-        return Inertia::render('devices/product', [
-            'device' => $device->only(['id', 'brand', 'model']),
-        ]);
-    }
-
-    public function shopPhoto(Device $device): StreamedResponse
+    public function shopShow(Request $request, Device $device): Response
     {
         abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
 
-        $path = $device->photos[0] ?? null;
+        return Inertia::render('devices/product', [
+            'device' => [
+                ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status']),
+                'photo_urls' => array_map(
+                    fn (int $index): string => route('shop.photo', ['device' => $device, 'index' => $index]),
+                    array_keys($device->photos ?? []),
+                ),
+            ],
+            'canReserve' => $request->user()->role === 'customer' && $device->status === 'goedgekeurd',
+            'status' => $request->session()->get('status'),
+        ]);
+    }
+
+    public function checkout(Request $request, Device $device): Response|RedirectResponse
+    {
+        abort_unless($request->user()->role === 'customer', 403);
+        abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
+
+        if ($device->status === 'gereserveerd') {
+            return to_route('shop.show', $device)->with('status', 'Dit product is al gereserveerd.');
+        }
+
+        return Inertia::render('devices/checkout', [
+            'device' => $device->only(['id', 'brand', 'model', 'asking_price']),
+        ]);
+    }
+
+    public function reserve(Request $request, Device $device): RedirectResponse
+    {
+        abort_unless($request->user()->role === 'customer', 403);
+        abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
+
+        $reserved = Device::query()
+            ->whereKey($device->id)
+            ->where('status', 'goedgekeurd')
+            ->whereNull('reserved_by_user_id')
+            ->update([
+                'status' => 'gereserveerd',
+                'reserved_by_user_id' => $request->user()->id,
+            ]);
+
+        return to_route('shop.show', $device)->with('status', $reserved
+            ? 'Je reservering is bevestigd. Dit product is voor jou gereserveerd.'
+            : 'Dit product is niet meer beschikbaar. Er is geen reservering gemaakt.');
+    }
+
+    public function shopPhoto(Request $request, Device $device): StreamedResponse
+    {
+        abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
+
+        $index = filter_var($request->query('index', 0), FILTER_VALIDATE_INT);
+        abort_if($index === false || $index < 0, 404);
+
+        $path = $device->photos[$index] ?? null;
         abort_unless($path && Storage::disk('local')->exists($path), 404);
 
         return Storage::disk('local')->response($path, null, [

@@ -21,6 +21,11 @@ class Device extends Model
         return ['photos' => 'array', 'asking_price' => 'decimal:2'];
     }
 
+    public function reservedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reserved_by_user_id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
