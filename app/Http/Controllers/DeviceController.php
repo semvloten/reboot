@@ -41,7 +41,7 @@ class DeviceController extends Controller
 
         return Inertia::render('devices/product', [
             'device' => [
-                ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status']),
+                ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'inspection', 'inspected_at']),
                 'photo_urls' => array_map(
                     fn (int $index): string => route('shop.photo', ['device' => $device, 'index' => $index]),
                     array_keys($device->photos ?? []),
@@ -159,10 +159,10 @@ class DeviceController extends Controller
             'devices' => Device::query()
                 ->where('user_id', $request->user()->id)
                 ->latest('id')
-                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'photos', 'status'])
+                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'photos', 'status', 'inspection', 'inspected_at'])
                 ->map(function (Device $device): array {
                     return [
-                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status']),
+                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'inspection', 'inspected_at']),
                         'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
                     ];
                 }),

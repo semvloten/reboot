@@ -1,8 +1,12 @@
+import InspectionReport, { type Inspection } from '@/components/inspection-report';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Head, Link } from '@inertiajs/react';
+import { Fragment } from 'react';
 
 interface Device {
     id: number;
+    inspection: Inspection | null;
+    inspected_at: string | null;
     type: string;
     brand: string;
     model: string;
@@ -42,46 +46,63 @@ export default function Devices({ devices }: { devices: Device[] }) {
                             </thead>
                             <tbody>
                                 {devices.map((device) => (
-                                    <tr key={device.id} className="border-t">
-                                        <td className="p-3">
-                                            {device.photo_url ? (
-                                                <img
-                                                    src={device.photo_url}
-                                                    alt={device.brand + ' ' + device.model}
-                                                    loading="lazy"
-                                                    className="size-20 min-w-20 rounded object-cover"
-                                                />
-                                            ) : (
-                                                <span className="text-slate-500">Geen foto</span>
-                                            )}
-                                        </td>
-                                        <td className="p-3 capitalize">{device.type}</td>
-                                        <td className="p-3">{device.brand}</td>
-                                        <td className="p-3">{device.model}</td>
-                                        <td className="p-3">{device.serial_number}</td>
-                                        <td className="p-3 capitalize">{device.condition}</td>
-                                        <td className="p-3">{device.accessories || 'Geen'}</td>
-                                        <td className="p-3 whitespace-nowrap">
-                                            {Number(device.asking_price).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}
-                                        </td>
-                                        <td className="p-3">
-                                            <span
-                                                className={`inline-block rounded-md px-3 py-1 font-medium text-white ${
-                                                    device.status === 'afgekeurd'
-                                                        ? 'bg-red-500'
-                                                        : device.status === 'onderhoud nodig'
-                                                          ? 'bg-orange-500'
-                                                          : device.status === 'goedgekeurd'
-                                                            ? 'bg-green-500'
-                                                            : device.status === 'in behandeling'
-                                                              ? 'bg-blue-500'
-                                                              : 'bg-gray-500'
-                                                }`}
-                                            >
-                                                {device.status}
-                                            </span>
-                                        </td>
-                                    </tr>
+                                    <Fragment key={device.id}>
+                                        <tr className="border-t">
+                                            <td className="p-3">
+                                                {device.photo_url ? (
+                                                    <img
+                                                        src={device.photo_url}
+                                                        alt={device.brand + ' ' + device.model}
+                                                        loading="lazy"
+                                                        className="size-20 min-w-20 rounded object-cover"
+                                                    />
+                                                ) : (
+                                                    <span className="text-slate-500">Geen foto</span>
+                                                )}
+                                            </td>
+                                            <td className="p-3 capitalize">{device.type}</td>
+                                            <td className="p-3">{device.brand}</td>
+                                            <td className="p-3">{device.model}</td>
+                                            <td className="p-3">{device.serial_number}</td>
+                                            <td className="p-3 capitalize">{device.condition}</td>
+                                            <td className="p-3">{device.accessories || 'Geen'}</td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {Number(device.asking_price).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}
+                                            </td>
+                                            <td className="p-3">
+                                                <span
+                                                    className={`inline-block rounded-md px-3 py-1 font-medium text-white ${
+                                                        device.status === 'afgekeurd'
+                                                            ? 'bg-red-500'
+                                                            : device.status === 'onderhoud nodig'
+                                                              ? 'bg-orange-500'
+                                                              : device.status === 'goedgekeurd'
+                                                                ? 'bg-green-500'
+                                                                : device.status === 'in behandeling'
+                                                                  ? 'bg-blue-500'
+                                                                  : 'bg-gray-500'
+                                                    }`}
+                                                >
+                                                    {device.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={9} className="border-t border-slate-100 p-3">
+                                                <details>
+                                                    <summary className="cursor-pointer rounded py-2 font-medium text-emerald-700 focus-visible:outline-2 focus-visible:outline-emerald-600">
+                                                        Keuringsinformatie bekijken voor {device.brand} {device.model}
+                                                    </summary>
+                                                    <InspectionReport
+                                                        inspection={device.inspection}
+                                                        deviceType={device.type}
+                                                        status={device.status}
+                                                        inspectedAt={device.inspected_at}
+                                                    />
+                                                </details>
+                                            </td>
+                                        </tr>
+                                    </Fragment>
                                 ))}
                             </tbody>
                         </table>

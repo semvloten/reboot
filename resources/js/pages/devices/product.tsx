@@ -1,3 +1,4 @@
+import InspectionReport, { type Inspection } from '@/components/inspection-report';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';
 import { Head, Link } from '@inertiajs/react';
@@ -6,6 +7,8 @@ import { useState } from 'react';
 
 interface ProductDevice {
     id: number;
+    inspection: Inspection | null;
+    inspected_at: string | null;
     type: string;
     brand: string;
     model: string;
@@ -122,13 +125,12 @@ export default function Product({ device, canReserve, status }: { device: Produc
                     <h2 id="inspection-heading" className="text-lg font-semibold">
                         Keuringsinformatie
                     </h2>
-                    <p className="mt-3 text-sm leading-6 text-slate-600">
-                        Hier verschijnt binnenkort informatie over de batterij, het scherm, de aansluitingen en de fabrieksreset. Ook de opmerkingen
-                        van de keurmeester worden hier getoond.
-                    </p>
-                    <p className="mt-2 text-sm text-slate-500">
-                        Dit is tijdelijke voorbeeldtekst; de echte keuringsresultaten worden later toegevoegd.
-                    </p>
+                    <InspectionReport
+                        inspection={device.inspection}
+                        deviceType={device.type}
+                        status={device.status}
+                        inspectedAt={device.inspected_at}
+                    />
                 </section>
             </main>
         </div>
