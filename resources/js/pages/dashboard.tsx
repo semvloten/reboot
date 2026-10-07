@@ -19,11 +19,14 @@ function typeLabel(type: string) {
     return type === 'laptops' ? 'Laptop' : type.charAt(0).toUpperCase() + type.slice(1);
 }
 
+// Dit is de winkelpagina; de server levert goedgekeurde en gereserveerde producten.
 export default function Shop({ devices }: { devices: ShopDevice[] }) {
+    // Bewaart de zoek- en filterkeuzes wanneer je vanuit een product terugkomt.
     const [filters, setFilters] = useRemember({ search: '', type: '', condition: '', sort: 'price-asc' }, 'Shop.filters');
     const types = [...new Set(devices.map((device) => device.type))].sort();
     const conditions = [...new Set(devices.map((device) => device.condition))].sort();
     const search = filters.search.trim().toLocaleLowerCase('nl-NL');
+    // Filtert de ontvangen producten en sorteert de prijzen als getallen.
     const filteredDevices = devices
         .filter(
             (device) =>

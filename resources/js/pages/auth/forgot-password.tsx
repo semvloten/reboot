@@ -14,6 +14,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
         email: '',
     });
 
+    // Vraagt per e-mail een resetlink aan voor het opgegeven account.
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 

@@ -18,6 +18,7 @@ interface Device {
     photo_url: string | null;
 }
 
+// Toont de eigen apparaten met hun status en eventueel het keuringsrapport.
 export default function Devices({ devices }: { devices: Device[] }) {
     return (
         <div className="min-h-screen bg-[#F3F4F6] text-[#111827]">

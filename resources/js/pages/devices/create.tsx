@@ -1,4 +1,4 @@
-﻿import InputError from '@/components/input-error';
+import InputError from '@/components/input-error';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { ImagePlus, LoaderCircle, X } from 'lucide-react';
 import { type FormEventHandler, useEffect, useRef, useState } from 'react';
 
+// Beschrijft de invoervelden en fotobestanden van een aanmelding.
 type DeviceForm = {
     type: string;
     brand: string;
@@ -35,12 +36,14 @@ export default function CreateDevice({ status }: { status?: string }) {
     const [previews, setPreviews] = useState<string[]>([]);
     const [photoError, setPhotoError] = useState('');
 
+    // Maakt tijdelijke fotovoorbeelden en geeft de gebruikte URLs daarna weer vrij.
     useEffect(() => {
         const urls = data.photos.map((photo) => URL.createObjectURL(photo));
         setPreviews(urls);
         return () => urls.forEach((url) => URL.revokeObjectURL(url));
     }, [data.photos]);
 
+    // Verstuurt ook de bestanden en leegt het formulier na een geslaagde aanmelding.
     const submit: FormEventHandler = (event) => {
         event.preventDefault();
         post(route('devices.store'), {
@@ -56,6 +59,7 @@ export default function CreateDevice({ status }: { status?: string }) {
 
     const fieldClass =
         'h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[#111827] focus-visible:outline-2 focus-visible:outline-emerald-600';
+    // Verzamelt algemene fotofouten en fouten van afzonderlijke foto's.
     const photoErrors = Object.entries(errors).filter(([key]) => key === 'photos' || key.startsWith('photos.'));
 
     return (

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 
+/** De dataset controleert meerdere routes en HTTP-methoden zonder ingelogd account. */
 it('redirects guests from application pages and actions to login', function (string $method, string $uri) {
     $this->call($method, $uri)->assertRedirect(route('login'));
     $this->assertGuest();
@@ -27,6 +28,7 @@ it('keeps account access pages available to guests', function (string $uri) {
     $this->get($uri)->assertOk();
 })->with(['/login', '/register', '/forgot-password']);
 
+/** Inloggen geeft een klant nog geen toegang tot functies voor keurmeesters. */
 it('still requires the inspector role after login', function () {
     $this->actingAs(User::factory()->create(['role' => 'customer']))
         ->get('/inspector')

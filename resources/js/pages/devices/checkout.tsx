@@ -13,6 +13,7 @@ interface CheckoutDevice {
 
 export default function Checkout({ device }: { device: CheckoutDevice }) {
     const { post, processing } = useForm({});
+    // Bevestigt een reservering; deze demo schrijft geen geld af.
     const submit: FormEventHandler = (event) => {
         event.preventDefault();
         post(route('shop.reserve', device.id));

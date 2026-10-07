@@ -1,4 +1,4 @@
-﻿import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { ArrowRight, Check, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -29,6 +29,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         remember: false,
     });
 
+    // Verstuurt de inloggegevens en wist het wachtwoord na iedere poging.
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('login'), {

@@ -20,7 +20,9 @@ interface ProductDevice {
     photo_urls: string[];
 }
 
+// canReserve komt van de server en bepaalt of de reserveringsactie wordt aangeboden.
 export default function Product({ device, canReserve, status }: { device: ProductDevice; canReserve: boolean; status?: string }) {
+    // Bewaart het nummer van de foto die groot in de galerij wordt getoond.
     const [selectedPhoto, setSelectedPhoto] = useState(0);
     const title = device.brand + ' ' + device.model;
     const reserved = device.status === 'gereserveerd';

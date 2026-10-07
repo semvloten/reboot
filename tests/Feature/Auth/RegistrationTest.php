@@ -41,6 +41,7 @@ test('inspectors can open registration with the role option', function () {
         );
 });
 
+/** Test beide accountrollen en controleert dat de keurmeester zelf ingelogd blijft. */
 test('inspectors can create accounts and remain signed in', function (bool $isInspector, string $expectedRole) {
     $inspector = User::factory()->create(['role' => 'inspector']);
 
@@ -92,6 +93,7 @@ test('customers cannot create accounts through registration', function (bool $is
     $this->assertAuthenticatedAs($customer);
 })->with([true, false]);
 
+/** Een bezoeker mag zichzelf via registratie geen keurmeesterrechten geven. */
 test('guests cannot request an inspector account', function () {
     $this->post(route('register'), [
         'name' => 'New Account',
@@ -105,6 +107,7 @@ test('guests cannot request an inspector account', function () {
     $this->assertGuest();
 });
 
+/** Een handmatig meegestuurde rol mag de veilige standaardrol customer niet overschrijven. */
 test('a supplied role does not grant inspector access during public registration', function () {
     $this->post(route('register'), [
         'name' => 'New Account',

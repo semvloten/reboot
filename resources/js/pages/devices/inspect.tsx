@@ -8,6 +8,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, ClipboardCheck, ImageOff, LoaderCircle, ZoomIn } from 'lucide-react';
 import { type FormEventHandler } from 'react';
 
+// Koppelt de opgeslagen checklistvelden aan de teksten die de keurmeester ziet.
 const checks = [
     ['works', 'Apparaat werkt volledig'],
     ['accessories_work', 'Accessoires werken goed'],
@@ -43,6 +44,7 @@ type Device = {
 };
 
 export default function InspectDevice({ device, status }: { device: Device; status?: string }) {
+    // Vult een bestaande keuring opnieuw in; ontbrekende controles beginnen op false.
     const previous = device.inspection;
     const { data, setData, patch, processing, errors, hasErrors } = useForm<InspectionForm>({
         works: previous?.works ?? false,
@@ -59,10 +61,12 @@ export default function InspectDevice({ device, status }: { device: Device; stat
         notes: previous?.notes ?? '',
         status: previous ? device.status : '',
     });
+    // Bij consoles vervallen scherm en batterij; tel alleen de zichtbare controles.
     const visibleChecks = checks.filter(([key]) => device.type !== 'console' || (key !== 'screen_work' && key !== 'battery_work'));
     const completed = visibleChecks.filter(([key]) => data[key]).length;
     const fieldClass =
         'min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[#111827] focus-visible:outline-2 focus-visible:outline-emerald-600';
+    // Slaat de checklist, opmerkingen en gekozen keuringsstatus op voor dit apparaat.
     const submit: FormEventHandler = (event) => {
         event.preventDefault();
         patch(route('inspector.devices.update', device.id), { preserveScroll: true });

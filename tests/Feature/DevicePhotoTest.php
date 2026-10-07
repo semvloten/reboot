@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+/** Gebruikt namaakopslag zodat de tests geen echte apparaatfoto's aanpassen. */
 beforeEach(function () {
     Storage::fake('local');
     $this->customer = User::factory()->create(['role' => 'customer']);
@@ -22,6 +23,7 @@ test('uploaded photos are saved privately with the device', function () {
     Storage::disk('local')->assertExists($device->photos[0]);
 });
 
+/** Probeert een verkeerd bestandstype, een te groot bestand en te veel foto's. */
 test('invalid photo uploads are rejected', function (string $invalidUpload) {
     $photos = match ($invalidUpload) {
         'not an image' => [UploadedFile::fake()->create('notes.pdf', 10, 'application/pdf')],
@@ -36,6 +38,7 @@ test('invalid photo uploads are rejected', function (string $invalidUpload) {
     expect(Storage::disk('local')->allFiles())->toBeEmpty();
 })->with(['not an image', 'too large', 'too many']);
 
+/** Wisselt van account om toegang voor eigenaar, andere klant en keurmeester te vergelijken. */
 test('device photos are accessible to the owner and inspectors but not other customers', function () {
     Storage::disk('local')->put('devices/private.jpg', 'private photo');
     $device = Device::factory()->for($this->customer)->create(['photos' => ['devices/private.jpg']]);
@@ -61,6 +64,7 @@ test('shop photos stay hidden until a device is approved', function (string $sta
     $this->get(route('shop.photo', $device))->assertNotFound();
 })->with(['in behandeling', 'afgekeurd', 'onderhoud nodig']);
 
+/** Een foto-index is het nummer van de foto; ongeldige nummers moeten een 404 opleveren. */
 test('invalid shop photo indexes return not found', function (string $index) {
     Storage::disk('local')->put('devices/front.jpg', 'front');
     $device = Device::factory()->create(['status' => 'goedgekeurd', 'photos' => ['devices/front.jpg']]);

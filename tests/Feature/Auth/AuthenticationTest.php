@@ -21,6 +21,7 @@ test('users can authenticate using the login screen', function () {
     $response->assertRedirect(route('dashboard', absolute: false));
 });
 
+/** Een verkeerd wachtwoord houdt de gebruiker uitgelogd en toont de Nederlandse foutmelding. */
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
@@ -51,6 +52,7 @@ test('users can logout', function () {
     $response->assertRedirect(route('login'));
 });
 
+/** Controleert doorverwijzingen van login en home via het dashboard naar de winkel. */
 test('signed in inspectors reach the shop through the dashboard from login and home', function () {
     $user = User::factory()->create(['role' => 'inspector']);
 

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Head, Link, useRemember } from '@inertiajs/react';
 import { Search } from 'lucide-react';
 
+// Geeft elke keuringsstatus een leesbare naam en een herkenbare kleur.
 const statuses = {
     'in behandeling': { label: 'In behandeling', color: 'bg-blue-500' },
     'onderhoud nodig': { label: 'Onderhoud nodig', color: 'bg-orange-500' },
@@ -33,9 +34,11 @@ function formatDate(value: string | null) {
 }
 
 export default function InspectorDevices({ devices }: { devices: Device[] }) {
+    // Onthoudt de filters wanneer je een apparaat opent en teruggaat naar het overzicht.
     const [filters, setFilters] = useRemember({ search: '', status: '', type: '' }, 'InspectorDevices.filters');
     const types = [...new Set(devices.map((device) => device.type))].sort();
     const search = filters.search.trim().toLocaleLowerCase('nl-NL');
+    // Combineert status, apparaattype en zoektekst zonder onderscheid tussen hoofdletters.
     const filteredDevices = devices.filter(
         (device) =>
             (!filters.status || device.status === filters.status) &&

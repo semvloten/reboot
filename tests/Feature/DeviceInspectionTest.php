@@ -4,6 +4,7 @@ use App\Models\Device;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia;
 
+/** Begint elke test als keurmeester met een geldige, volledig ingevulde telefoonkeuring. */
 beforeEach(function () {
     $this->inspector = User::factory()->create(['role' => 'inspector']);
     $this->inspection = [
@@ -45,6 +46,7 @@ test('inspectors can save approval rejection and repair decisions', function (st
         ->and($device->inspected_at)->not->toBeNull();
 })->with(['goedgekeurd', 'afgekeurd', 'onderhoud nodig']);
 
+/** Elke verplichte controle wordt apart uitgezet om onterechte goedkeuring te voorkomen. */
 test('approval requires every necessary check to pass', function (string $check) {
     $device = Device::factory()->create();
     $this->inspection[$check] = false;
@@ -77,6 +79,7 @@ test('laptop inspections require the connection types', function () {
     expect($device->fresh()->inspection)->toHaveKey('port_types', 'USB-C, HDMI');
 });
 
+/** Een reservering beschermt het apparaat tegen verdere wijzigingen via de keuring. */
 test('reserved devices cannot be opened or changed for inspection', function () {
     $device = Device::factory()->create(['status' => 'gereserveerd', 'reserved_by_user_id' => User::factory()->create()->id]);
     $this->get(route('inspector.devices.inspect', $device))->assertStatus(409);

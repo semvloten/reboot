@@ -4,6 +4,7 @@ use App\Models\Device;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia;
 
+/** Maakt voor elke test een klant en voorbeeldinvoer met spaties en een kommaprijs. */
 beforeEach(function () {
     $this->customer = User::factory()->create(['role' => 'customer']);
     $this->submission = [
@@ -18,6 +19,7 @@ test('customers can open the device submission page', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page->component('devices/create'));
 });
 
+/** Controleert dat meegestuurde eigenaar en status niet worden overgenomen van de klant. */
 test('submissions save the owner and normalize the serial number and price', function () {
     $this->actingAs($this->customer)->post(route('devices.store'), $this->submission + [
         'user_id' => User::factory()->create()->id, 'status' => 'goedgekeurd',
@@ -37,6 +39,7 @@ test('duplicate serial numbers are rejected regardless of casing and whitespace'
     $this->assertDatabaseCount('devices', 1);
 });
 
+/** De dataset herhaalt dezelfde validatiecontrole met verschillende ongeldige velden. */
 test('invalid device details are rejected', function (string $field, mixed $value) {
     $this->submission[$field] = $value;
     $this->actingAs($this->customer)->post(route('devices.store'), $this->submission)->assertSessionHasErrors($field);
@@ -73,6 +76,7 @@ test('inspectors cannot submit devices or open customer device pages', function 
     $this->assertDatabaseCount('devices', 0);
 });
 
+/** Zonder ingelogd account verwijzen zowel pagina's als opslagacties naar de login. */
 test('guests must sign in to use custom pages and actions', function () {
     $device = Device::factory()->create();
     foreach (['shop.index', 'devices.index', 'devices.create', 'inspector.devices.index', 'inspector'] as $routeName) {

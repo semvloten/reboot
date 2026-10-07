@@ -4,11 +4,13 @@ use App\Models\Device;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia;
 
+/** Logt voor elke winkeltest een nieuw klantaccount in. */
 beforeEach(function () {
     $this->customer = User::factory()->create(['role' => 'customer']);
     $this->actingAs($this->customer);
 });
 
+/** Controleert welke statussen zichtbaar zijn en of de goedkoopste producten eerst komen. */
 test('the shop lists approved and reserved products ordered by price', function () {
     $approved = Device::factory()->create(['status' => 'goedgekeurd', 'asking_price' => 100]);
     $reserved = Device::factory()->create(['status' => 'gereserveerd', 'asking_price' => 200]);
@@ -33,6 +35,7 @@ test('product details include the inspection report and reservation availability
             ->where('canReserve', $canReserve));
 })->with([['goedgekeurd', true], ['gereserveerd', false]]);
 
+/** Ook directe productlinks en reserveringsaanvragen mogen de keuring niet omzeilen. */
 test('unapproved products cannot be viewed checked out or reserved', function (string $status) {
     $device = Device::factory()->create(['status' => $status]);
     $this->get(route('shop.show', $device))->assertNotFound();
@@ -57,6 +60,7 @@ test('customers can reserve an approved product', function () {
     ]);
 });
 
+/** Een tweede klant mag een bestaande reservering niet overnemen. */
 test('a second customer cannot take an existing reservation', function () {
     $device = Device::factory()->create(['status' => 'goedgekeurd']);
     $this->post(route('shop.reserve', $device));

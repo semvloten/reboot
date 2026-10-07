@@ -18,6 +18,7 @@ type RegisterForm = {
     is_inspector: boolean;
 };
 
+// De server geeft aan of deze gebruiker keurmeesteraccounts mag aanmaken.
 interface RegisterProps {
     canCreateInspector: boolean;
     status?: string;
@@ -32,6 +33,7 @@ export default function Register({ canCreateInspector, status }: RegisterProps) 
         is_inspector: false,
     });
 
+    // Na accountaanmaak kan de keurmeester opnieuw beginnen; wachtwoorden worden altijd gewist.
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
