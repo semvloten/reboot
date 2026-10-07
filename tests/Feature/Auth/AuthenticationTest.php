@@ -51,10 +51,11 @@ test('users can logout', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('signed in inspectors return to the dashboard from login and home', function () {
+test('signed in inspectors reach the shop through the dashboard from login and home', function () {
     $user = User::factory()->create(['role' => 'inspector']);
 
     $this->actingAs($user)->get('/login')->assertRedirect(route('dashboard'));
     $this->get('/')->assertRedirect(route('dashboard'));
-    $this->get('/dashboard')->assertOk();
+    $this->get('/dashboard')->assertRedirect(route('shop.index'));
+    $this->get(route('shop.index'))->assertOk();
 });
