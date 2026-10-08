@@ -50,7 +50,10 @@ class DeviceController extends Controller
                     array_keys($device->photos ?? []),
                 ),
             ],
-            'canReserve' => $request->user()->role === 'customer' && $device->status === 'goedgekeurd',
+            'isOwnDevice' => (int) $device->user_id === (int) $request->user()->id,
+            'canReserve' => $request->user()->role === 'customer'
+                && (int) $device->user_id !== (int) $request->user()->id
+                && $device->status === 'goedgekeurd',
             'status' => $request->session()->get('status'),
         ]);
     }
@@ -59,6 +62,10 @@ class DeviceController extends Controller
     {
         abort_unless($request->user()->role === 'customer', 403);
         abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
+
+        if ((int) $device->user_id === (int) $request->user()->id) {
+            return to_route('shop.show', $device)->with('status', 'Je kunt je eigen apparaat niet reserveren.');
+        }
 
         if ($device->status === 'gereserveerd') {
             return to_route('shop.show', $device)->with('status', 'Dit product is al gereserveerd.');
@@ -74,8 +81,13 @@ class DeviceController extends Controller
         abort_unless($request->user()->role === 'customer', 403);
         abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
 
+        if ((int) $device->user_id === (int) $request->user()->id) {
+            return to_route('shop.show', $device)->with('status', 'Je kunt je eigen apparaat niet reserveren.');
+        }
+
         $reserved = Device::query()
             ->whereKey($device->id)
+            ->where('user_id', '!=', $request->user()->id)
             ->where('status', 'goedgekeurd')
             ->whereNull('reserved_by_user_id')
             ->update([

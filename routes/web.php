@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\DeviceController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -15,15 +14,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/winkel/{device}/betalen', [DeviceController::class, 'checkout'])->name('shop.checkout');
     Route::post('/winkel/{device}/reserveren', [DeviceController::class, 'reserve'])->name('shop.reserve');
     Route::get('/winkel/{device}', [DeviceController::class, 'shopShow'])->name('shop.show');
-
-    Route::get('/db-test', function () {
-        abort_unless(app()->environment('local'), 404);
-        $userCount = User::count();
-
-        return view('db-test', [
-            'userCount' => $userCount,
-        ]);
-    })->middleware('inspector');
 
     Route::middleware('inspector')->group(function () {
         Route::get('/inspector', fn () => to_route('inspector.devices.index'))->name('inspector');

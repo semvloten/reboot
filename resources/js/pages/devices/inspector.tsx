@@ -90,7 +90,7 @@ function TriageForm({ device, inspectors }: { device: Device; inspectors: Inspec
                     <InputError id={'assigned-error-' + device.id} message={errors.assigned_to_user_id} />
                 </div>
             </fieldset>
-            <Button type="submit" disabled={processing} variant="outline">
+            <Button type="submit" disabled={processing} className="bg-[#10B981] font-semibold text-[#111827] hover:bg-[#10B981]/80">
                 {processing ? 'Opslaan...' : 'Toewijzing opslaan'}
             </Button>
             {recentlySuccessful && (

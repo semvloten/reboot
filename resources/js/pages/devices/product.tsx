@@ -21,7 +21,17 @@ interface ProductDevice {
 }
 
 // canReserve komt van de server en bepaalt of de reserveringsactie wordt aangeboden.
-export default function Product({ device, canReserve, status }: { device: ProductDevice; canReserve: boolean; status?: string }) {
+export default function Product({
+    device,
+    canReserve,
+    isOwnDevice,
+    status,
+}: {
+    device: ProductDevice;
+    canReserve: boolean;
+    isOwnDevice: boolean;
+    status?: string;
+}) {
     // Bewaart het nummer van de foto die groot in de galerij wordt getoond.
     const [selectedPhoto, setSelectedPhoto] = useState(0);
     const title = device.brand + ' ' + device.model;
@@ -116,7 +126,7 @@ export default function Product({ device, canReserve, status }: { device: Produc
                                 </Button>
                             ) : (
                                 <Button disabled className="h-12 w-full bg-slate-200 text-slate-700 disabled:opacity-100">
-                                    {reserved ? 'Gereserveerd' : 'Alleen klanten kunnen reserveren'}
+                                    {isOwnDevice ? 'Dit is jouw apparaat' : reserved ? 'Gereserveerd' : 'Alleen klanten kunnen reserveren'}
                                 </Button>
                             )}
                         </div>
