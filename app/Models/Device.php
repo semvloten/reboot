@@ -18,7 +18,12 @@ class Device extends Model
     /** @return array<string, string> */
     protected function casts(): array
     {
-        return ['photos' => 'array', 'asking_price' => 'decimal:2', 'inspection' => 'array', 'inspected_at' => 'datetime'];
+        return ['priority' => 'integer', 'assigned_to_user_id' => 'integer', 'photos' => 'array', 'asking_price' => 'decimal:2', 'inspection' => 'array', 'inspected_at' => 'datetime'];
+    }
+
+    public function assignedInspector(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to_user_id');
     }
 
     public function reservedBy(): BelongsTo

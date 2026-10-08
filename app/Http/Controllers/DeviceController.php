@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InspectDeviceRequest;
 use App\Http\Requests\StoreDeviceRequest;
+use App\Http\Requests\UpdateDeviceTriageRequest;
 use App\Models\Device;
+use App\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -102,20 +104,42 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function inspectorIndex(): Response
+    public function inspectorIndex(Request $request): Response
     {
         return Inertia::render('devices/inspector', [
+            'status' => $request->session()->get('status'),
+            'inspectors' => User::query()->where('role', 'inspector')->orderBy('name')->get(['id', 'name']),
             'devices' => Device::query()
                 ->whereIn('status', ['in behandeling', 'onderhoud nodig', 'goedgekeurd', 'afgekeurd'])
-                ->latest('id')
-                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at', 'photos'])
+                ->with('assignedInspector:id,name')
+                ->orderByDesc('priority')
+                ->oldest('created_at')
+                ->orderBy('id')
+                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at', 'photos', 'priority', 'assigned_to_user_id'])
                 ->map(function (Device $device): array {
                     return [
-                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at']),
+                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at', 'priority', 'assigned_to_user_id']),
+                        'assigned_inspector_name' => $device->assignedInspector?->name,
                         'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
                     ];
                 }),
         ]);
+    }
+
+    public function updateTriage(UpdateDeviceTriageRequest $request, Device $device): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $device): void {
+            $lockedDevice = Device::query()->lockForUpdate()->findOrFail($device->id);
+            if ($lockedDevice->status === 'gereserveerd') {
+                throw ValidationException::withMessages(['priority' => 'Dit apparaat is inmiddels gereserveerd en kan niet meer worden toegewezen.']);
+            }
+
+            $lockedDevice->priority = (int) $request->validated('priority');
+            $lockedDevice->assigned_to_user_id = $request->validated('assigned_to_user_id');
+            $lockedDevice->save();
+        });
+
+        return to_route('inspector.devices.index')->with('status', 'De prioriteit en toewijzing zijn opgeslagen.');
     }
 
     public function inspect(Device $device): Response
@@ -139,20 +163,24 @@ class DeviceController extends Controller
 
     public function updateInspection(InspectDeviceRequest $request, Device $device): RedirectResponse
     {
-        DB::transaction(function () use ($request, $device): void {
-            $lockedDevice = Device::query()->lockForUpdate()->findOrFail($device->id);
-            if ($lockedDevice->status === 'gereserveerd' || $lockedDevice->reserved_by_user_id !== null) {
-                throw ValidationException::withMessages(['status' => 'Dit apparaat is inmiddels gereserveerd en kan niet opnieuw worden gekeurd.']);
-            }
+        try {
+            DB::transaction(function () use ($request, $device): void {
+                $lockedDevice = Device::query()->lockForUpdate()->findOrFail($device->id);
+                if ($lockedDevice->status === 'gereserveerd' || $lockedDevice->reserved_by_user_id !== null) {
+                    throw ValidationException::withMessages(['status' => 'Dit apparaat is inmiddels gereserveerd en kan niet opnieuw worden gekeurd.']);
+                }
 
-            $lockedDevice->status = $request->validated('status');
-            $lockedDevice->inspection = $request->safe()->except('status');
-            $lockedDevice->inspected_by_user_id = $request->user()->id;
-            $lockedDevice->inspected_at = now();
-            $lockedDevice->save();
-        });
+                $lockedDevice->status = $request->validated('status');
+                $lockedDevice->inspection = $request->safe()->except('status');
+                $lockedDevice->inspected_by_user_id = $request->user()->id;
+                $lockedDevice->inspected_at = now();
+                $lockedDevice->save();
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            throw ValidationException::withMessages(['status' => 'Er bestaat inmiddels een ander actief apparaat met dit serienummer. Dit apparaat kan alleen afgekeurd blijven.']);
+        }
 
-        return to_route('shop.index')->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
+        return to_route('inspector.devices.index')->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
     }
 
     public function index(Request $request): Response
@@ -238,7 +266,7 @@ class DeviceController extends Controller
         } catch (Throwable $exception) {
             Storage::disk('local')->delete($paths);
             if ($exception instanceof UniqueConstraintViolationException) {
-                throw ValidationException::withMessages(['serial_number' => 'Dit serienummer is al geregistreerd. Controleer het nummer of neem contact met ons op.']);
+                throw ValidationException::withMessages(['serial_number' => 'Dit serienummer hoort al bij een actief apparaat. Controleer het nummer of neem contact met ons op.']);
             }
             throw $exception;
         }

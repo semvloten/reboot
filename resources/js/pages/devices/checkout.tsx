@@ -34,7 +34,7 @@ export default function Checkout({ device }: { device: CheckoutDevice }) {
                     </div>
                     <h1 className="mt-6 text-2xl font-bold">Reservering afronden</h1>
                     <p className="mt-2 text-sm leading-6 text-slate-600">
-                        Dit is een nepbetaling. Er wordt geen geld afgeschreven en je hoeft geen betaalgegevens in te vullen.
+                        Dit is een demo-betaling. Er wordt geen geld afgeschreven en je hoeft geen betaalgegevens in te vullen.
                     </p>
                     <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-slate-50 p-4">
                         <span className="min-w-0 font-medium break-words">
@@ -54,14 +54,14 @@ export default function Checkout({ device }: { device: CheckoutDevice }) {
                     </div>
                     <p className="mt-6 flex items-start gap-2 text-sm text-slate-600">
                         <LockKeyhole aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-                        Met Proceed bevestig je de reservering voor jouw account.
+                        Met de knop hieronder bevestig je de reservering voor jouw account.
                     </p>
                     <Button
                         type="submit"
                         disabled={processing}
                         className="mt-6 h-12 w-full bg-[#10B981] font-semibold text-[#111827] hover:bg-[#10B981]/80"
                     >
-                        {processing ? 'Reserveren...' : 'Proceed'}
+                        {processing ? 'Reserveren...' : 'Reservering bevestigen'}
                     </Button>
                 </form>
             </main>

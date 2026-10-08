@@ -17,17 +17,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/winkel/{device}', [DeviceController::class, 'shopShow'])->name('shop.show');
 
     Route::get('/db-test', function () {
+        abort_unless(app()->environment('local'), 404);
         $userCount = User::count();
 
         return view('db-test', [
             'userCount' => $userCount,
         ]);
-    });
+    })->middleware('inspector');
 
     Route::middleware('inspector')->group(function () {
         Route::get('/inspector', fn () => to_route('inspector.devices.index'))->name('inspector');
         Route::get('/apparaten-keuren-overzicht', [DeviceController::class, 'inspectorIndex'])->name('inspector.devices.index');
         Route::get('/apparaten-keuren/{device}', [DeviceController::class, 'inspect'])->name('inspector.devices.inspect');
+        Route::patch('/apparaten-keuren/{device}/toewijzing', [DeviceController::class, 'updateTriage'])->name('inspector.devices.triage');
         Route::patch('/apparaten-keuren/{device}', [DeviceController::class, 'updateInspection'])->name('inspector.devices.update');
     });
 
