@@ -23,7 +23,7 @@ export default function Devices({ devices }: { devices: Device[] }) {
     return (
         <div className="min-h-screen bg-[#F3F4F6] text-[#111827]">
             <Head title="Mijn apparaten | Reboot" />
-            <RebootNavbar showDashboard />
+            <RebootNavbar />
             <main className="mx-auto max-w-5xl p-4 sm:p-8">
                 <h1 className="mb-4 text-2xl font-bold">Mijn apparaten</h1>
                 <Link href={route('devices.create')} className="text-emerald-700 underline">

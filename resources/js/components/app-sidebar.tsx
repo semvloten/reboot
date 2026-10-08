@@ -4,13 +4,13 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, PlusCircle } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        url: '/dashboard',
+        title: 'Winkel',
+        url: '/winkel',
         icon: LayoutGrid,
     },
 ];
@@ -29,13 +29,13 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage<SharedData>().props;
+    const page = usePage<SharedData>();
+    const { auth } = page.props;
     const items =
         auth.user?.role === 'customer'
             ? [
                   ...mainNavItems,
                   { title: 'Mijn apparaten', url: route('devices.index'), icon: LayoutGrid },
-                  { title: 'Apparaat aanmelden', url: route('devices.create'), icon: PlusCircle },
               ]
             : auth.user?.role === 'inspector'
               ? [...mainNavItems, { title: 'Apparaten keuren', url: route('inspector.devices.index'), icon: LayoutGrid }]
@@ -46,7 +46,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
+                            <Link href={route('shop.index')} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -55,7 +55,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={items} />
+                <NavMain items={items.filter((item) => new URL(item.url, 'http://localhost').pathname !== new URL(page.url, 'http://localhost').pathname)} />
             </SidebarContent>
 
             <SidebarFooter>

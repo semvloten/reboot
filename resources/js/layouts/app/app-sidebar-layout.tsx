@@ -11,7 +11,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: { child
             <AppSidebar />
             <AppContent variant="sidebar">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
-                <RebootNavbar showDashboard />
+                <RebootNavbar />
                 {children}
             </AppContent>
         </AppShell>

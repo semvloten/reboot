@@ -75,7 +75,7 @@ export default function InspectDevice({ device, status }: { device: Device; stat
     return (
         <div className="min-h-screen bg-[#F3F4F6] text-[#111827]">
             <Head title="Apparaat keuren | Reboot" />
-            <RebootNavbar showDashboard />
+            <RebootNavbar />
             <main className="mx-auto max-w-5xl px-4 py-8 sm:p-8">
                 <Link
                     href={route('inspector.devices.index')}

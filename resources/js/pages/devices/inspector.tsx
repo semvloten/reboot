@@ -54,7 +54,7 @@ export default function InspectorDevices({ devices }: { devices: Device[] }) {
     return (
         <div className="min-h-screen bg-[#F3F4F6] text-[#111827]">
             <Head title="Apparaten keuren | Reboot" />
-            <RebootNavbar showDashboard />
+            <RebootNavbar />
             <main className="mx-auto max-w-5xl p-4 sm:p-8">
                 <h1 className="text-2xl font-bold">Apparaten keuren</h1>
                 <p className="mt-2 text-sm text-slate-600">Bekijk alle aangemelde apparaten en hun keuringsstatus.</p>

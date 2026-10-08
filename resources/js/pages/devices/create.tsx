@@ -65,7 +65,7 @@ export default function CreateDevice({ status }: { status?: string }) {
     return (
         <div className="min-h-screen bg-[#F3F4F6] text-[#111827]">
             <Head title="Apparaat aanmelden | Reboot" />
-            <RebootNavbar showDashboard />
+            <RebootNavbar />
             <main className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
                 <h1 className="text-3xl font-bold">Apparaat aanmelden</h1>
                 <p className="mt-2 text-slate-600">

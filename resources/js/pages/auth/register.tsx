@@ -48,7 +48,6 @@ export default function Register({ canCreateInspector, status }: RegisterProps) 
 
     return (
         <AuthLayout
-            showBackLink={false}
             title={canCreateInspector ? 'Maak een account aan.' : 'Maak je account aan.'}
             description={
                 canCreateInspector
@@ -181,8 +180,8 @@ export default function Register({ canCreateInspector, status }: RegisterProps) 
 
                 <div className="mt-8 border-t border-slate-200 pt-7 text-center text-sm text-slate-500">
                     {canCreateInspector ? (
-                        <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('dashboard')}>
-                            Terug naar dashboard
+                        <TextLink className="font-semibold text-emerald-700 decoration-emerald-700/30" href={route('shop.index')}>
+                            Terug naar winkel
                         </TextLink>
                     ) : (
                         <>

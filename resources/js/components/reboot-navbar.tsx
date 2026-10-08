@@ -8,12 +8,14 @@ interface RebootNavbarProps {
     showLogin?: boolean;
     showRegister?: boolean;
     showLogout?: boolean;
-    showDashboard?: boolean;
 }
 
-export default function RebootNavbar({ showLogin = true, showRegister = true, showLogout = true, showDashboard = false }: RebootNavbarProps) {
-    const { auth } = usePage<SharedData>().props;
-    const canShowRegister = showRegister && auth.user?.role === 'inspector';
+export default function RebootNavbar({ showLogin = true, showRegister = true, showLogout = true }: RebootNavbarProps) {
+    const page = usePage<SharedData>();
+    const { auth } = page.props;
+    const currentPath = new URL(page.url, 'http://localhost').pathname;
+    const isCurrentPage = (routeName: string) => currentPath === new URL(route(routeName), 'http://localhost').pathname;
+    const canShowRegister = showRegister && auth.user?.role === 'inspector' && !isCurrentPage('register');
     const canShowLogout = showLogout && !!auth.user;
 
     return (
@@ -28,7 +30,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
             >
                 <Power className="size-6 text-[#10B981]" aria-hidden="true" />
             </Link>
-            {showLogin && !auth.user && (
+            {showLogin && !auth.user && !isCurrentPage('login') && (
                 <Button
                     asChild
                     variant="outline"
@@ -38,17 +40,17 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     <Link href={route('login')}>Login</Link>
                 </Button>
             )}
-            {showDashboard && auth.user && (
+            {!isCurrentPage('shop.index') && (
                 <Button
                     asChild
                     variant="outline"
                     size="sm"
                     className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
                 >
-                    <Link href={route('dashboard')}>Dashboard</Link>
+                    <Link href={route('shop.index')}>Winkel</Link>
                 </Button>
             )}
-            {auth.user?.role === 'inspector' && (
+            {auth.user?.role === 'inspector' && !isCurrentPage('inspector.devices.index') && (
                 <Button
                     asChild
                     variant="outline"
@@ -58,7 +60,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     <Link href={route('inspector.devices.index')}>Apparaten keuren</Link>
                 </Button>
             )}
-            {auth.user?.role === 'customer' && (
+            {auth.user?.role === 'customer' && !isCurrentPage('devices.index') && (
                 <>
                     <Button
                         asChild
@@ -67,14 +69,6 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                         className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
                     >
                         <Link href={route('devices.index')}>Mijn apparaten</Link>
-                    </Button>
-                    <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="h-12 rounded-xl border-transparent bg-[#10B981] px-4 font-semibold text-[#111827] hover:bg-[#10B981]/80 hover:text-[#111827] focus-visible:ring-[#10B981]"
-                    >
-                        <Link href={route('devices.create')}>Apparaat toevoegen</Link>
                     </Button>
                 </>
             )}
@@ -94,7 +88,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
                     <DropdownMenuContent align="end" className="rounded-xl border-[#111827]/10 bg-[#F3F4F6] p-1.5 text-[#111827]">
                         {canShowRegister && (
                             <DropdownMenuItem asChild className="min-h-11 rounded-lg px-3 focus:bg-[#10B981]/20 focus:text-[#111827]">
-                                <Link href={route('register')}>Regristreer nieuw account</Link>
+                                <Link href={route('register')}>Registreer nieuw account</Link>
                             </DropdownMenuItem>
                         )}
                         {canShowLogout && (
