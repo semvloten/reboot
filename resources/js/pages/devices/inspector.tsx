@@ -13,20 +13,14 @@ const statuses = {
 
 interface Device {
     id: number;
-    user_id: number;
-    customer_name: string | null;
     type: string;
     brand: string;
     model: string;
     serial_number: string;
     condition: string;
-    accessories: string | null;
-    asking_price: string;
     status: keyof typeof statuses;
     photo_url: string | null;
-    photo_count: number;
     created_at: string | null;
-    updated_at: string | null;
 }
 
 function formatDate(value: string | null) {
@@ -43,7 +37,7 @@ export default function InspectorDevices({ devices }: { devices: Device[] }) {
         (device) =>
             (!filters.status || device.status === filters.status) &&
             (!filters.type || device.type === filters.type) &&
-            [device.id, device.brand, device.model, device.serial_number, device.type, device.condition, device.accessories, device.status]
+            [device.brand, device.model, device.serial_number, device.type, device.condition, device.status]
                 .join(' ')
                 .toLocaleLowerCase('nl-NL')
                 .includes(search),
@@ -87,7 +81,7 @@ export default function InspectorDevices({ devices }: { devices: Device[] }) {
                                 id="device-search"
                                 type="search"
                                 className={fieldClass + ' pl-10'}
-                                placeholder="Zoek op merk, model, serienummer of ID"
+                                placeholder="Zoek op merk, model of serienummer"
                                 value={filters.search}
                                 onChange={(event) => setFilters({ ...filters, search: event.target.value })}
                             />
@@ -164,19 +158,10 @@ export default function InspectorDevices({ devices }: { devices: Device[] }) {
                                 </div>
                                 <dl className="mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
                                     {[
-                                        ['Merk', device.brand],
-                                        ['Model', device.model],
                                         ['Soort', device.type === 'laptops' ? 'Laptop' : device.type],
-                                        ['Apparaat-ID', device.id],
-                                        ['Klantnaam', device.customer_name || 'Onbekend'],
-                                        ['Klant-ID', device.user_id],
                                         ['Serienummer', device.serial_number],
                                         ['Conditie', device.condition],
-                                        ['Accessoires', device.accessories || 'Geen'],
-                                        ['Vraagprijs', Number(device.asking_price).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })],
                                         ['Aangemeld op', formatDate(device.created_at)],
-                                        ['Bijgewerkt op', formatDate(device.updated_at)],
-                                        ["Aantal foto's", device.photo_count],
                                     ].map(([label, value]) => (
                                         <div key={label} className="contents">
                                             <dt className="text-slate-500">{label}</dt>

@@ -101,7 +101,6 @@ export default function Product({ device, canReserve, status }: { device: Produc
                                     ['Conditie', device.condition],
                                     ['Accessoires', device.accessories || 'Geen'],
                                     ['Serienummer', device.serial_number],
-                                    ['Apparaat-ID', 'APP-' + device.id],
                                 ].map(([label, value]) => (
                                     <div key={label} className="contents">
                                         <dt className="text-slate-500">{label}</dt>

@@ -19,9 +19,10 @@ use Throwable;
 
 class DeviceController extends Controller
 {
-    public function shop(): Response
+    public function shop(Request $request): Response
     {
         return Inertia::render('dashboard', [
+            'status' => $request->session()->get('status'),
             'devices' => Device::query()
                 ->whereIn('status', ['goedgekeurd', 'gereserveerd'])
                 ->orderBy('asking_price')
@@ -105,31 +106,34 @@ class DeviceController extends Controller
     {
         return Inertia::render('devices/inspector', [
             'devices' => Device::query()
-                ->with('user:id,name')
                 ->whereIn('status', ['in behandeling', 'onderhoud nodig', 'goedgekeurd', 'afgekeurd'])
                 ->latest('id')
-                ->get()
+                ->get(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at', 'photos'])
                 ->map(function (Device $device): array {
                     return [
-                        ...$device->only(['id', 'user_id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'created_at', 'updated_at']),
+                        ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'status', 'created_at']),
                         'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
-                        'photo_count' => count($device->photos ?? []),
-                        'customer_name' => $device->user?->name,
                     ];
                 }),
         ]);
     }
 
-    public function inspect(Request $request, Device $device): Response
+    public function inspect(Device $device): Response
     {
         abort_if($device->status === 'gereserveerd', 409, 'Een gereserveerd apparaat kan niet opnieuw worden gekeurd.');
 
+        $device->load('user:id,name,email');
+
         return Inertia::render('devices/inspect', [
             'device' => [
-                ...$device->only(['id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'created_at', 'inspection']),
-                'photo_url' => ! empty($device->photos) ? route('devices.photo', $device) : null,
+                ...$device->only(['id', 'user_id', 'type', 'brand', 'model', 'serial_number', 'condition', 'accessories', 'asking_price', 'status', 'created_at', 'updated_at', 'inspection', 'inspected_at', 'inspected_by_user_id']),
+                'customer_name' => $device->user?->name,
+                'customer_email' => $device->user?->email,
+                'photo_urls' => array_map(
+                    fn (int $index): string => route('devices.photo', ['device' => $device, 'index' => $index]),
+                    array_keys($device->photos ?? []),
+                ),
             ],
-            'status' => $request->session()->get('status'),
         ]);
     }
 
@@ -148,7 +152,7 @@ class DeviceController extends Controller
             $lockedDevice->save();
         });
 
-        return to_route('inspector.devices.inspect', $device)->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
+        return to_route('shop.index')->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
     }
 
     public function index(Request $request): Response
@@ -169,11 +173,33 @@ class DeviceController extends Controller
         ]);
     }
 
+    public function reservations(Request $request): Response
+    {
+        abort_unless($request->user()->role === 'customer', 403);
+
+        return Inertia::render('devices/reservations', [
+            'reservedDevices' => Device::query()
+                ->where('reserved_by_user_id', $request->user()->id)
+                ->where('status', 'gereserveerd')
+                ->latest('updated_at')
+                ->get(['id', 'brand', 'model', 'asking_price', 'photos'])
+                ->map(function (Device $device): array {
+                    return [
+                        ...$device->only(['id', 'brand', 'model', 'asking_price']),
+                        'photo_url' => ! empty($device->photos) ? route('shop.photo', $device) : null,
+                    ];
+                }),
+        ]);
+    }
+
     public function photo(Request $request, Device $device): StreamedResponse
     {
         abort_unless($request->user()->role === 'inspector' || ($request->user()->role === 'customer' && $device->user_id === $request->user()->id), 404);
 
-        $path = $device->photos[0] ?? null;
+        $index = filter_var($request->query('index', 0), FILTER_VALIDATE_INT);
+        abort_if($index === false || $index < 0, 404);
+
+        $path = $device->photos[$index] ?? null;
         abort_unless($path && Storage::disk('local')->exists($path), 404);
 
         return Storage::disk('local')->response($path, null, [
@@ -186,7 +212,7 @@ class DeviceController extends Controller
     {
         abort_unless($request->user()->role === 'customer', 403, 'Alleen klanten kunnen apparaten aanmelden.');
 
-        return Inertia::render('devices/create', ['status' => $request->session()->get('status')]);
+        return Inertia::render('devices/create');
     }
 
     public function store(StoreDeviceRequest $request): RedirectResponse
@@ -217,6 +243,6 @@ class DeviceController extends Controller
             throw $exception;
         }
 
-        return to_route('devices.create')->with('status', 'Het apparaat is succesvol aangemeld.');
+        return to_route('shop.index')->with('status', 'Het apparaat is succesvol aangemeld.');
     }
 }

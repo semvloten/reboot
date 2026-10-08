@@ -20,7 +20,7 @@ function typeLabel(type: string) {
 }
 
 // Dit is de winkelpagina; de server levert goedgekeurde en gereserveerde producten.
-export default function Shop({ devices }: { devices: ShopDevice[] }) {
+export default function Shop({ devices, status }: { devices: ShopDevice[]; status?: string }) {
     // Bewaart de zoek- en filterkeuzes wanneer je vanuit een product terugkomt.
     const [filters, setFilters] = useRemember({ search: '', type: '', condition: '', sort: 'price-asc' }, 'Shop.filters');
     const types = [...new Set(devices.map((device) => device.type))].sort();
@@ -47,6 +47,11 @@ export default function Shop({ devices }: { devices: ShopDevice[] }) {
             <main className="mx-auto max-w-6xl p-4 sm:p-8">
                 <h1 className="text-3xl font-bold">Winkel</h1>
                 <p className="mt-2 text-sm text-slate-600">Gecontroleerde apparaten, klaar voor een tweede leven.</p>
+                {status && (
+                    <div role="status" className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                        {status}
+                    </div>
+                )}
                 <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
                     <div>
                         <label htmlFor="shop-search" className="mb-2 block text-sm font-medium">

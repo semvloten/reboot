@@ -39,11 +39,17 @@ type Device = {
     asking_price: string;
     status: string;
     created_at: string;
-    photo_url: string | null;
+    photo_urls: string[];
+    user_id: number;
+    customer_name: string | null;
+    customer_email: string | null;
+    updated_at: string;
+    inspected_at: string | null;
+    inspected_by_user_id: number | null;
     inspection: Partial<InspectionForm> | null;
 };
 
-export default function InspectDevice({ device, status }: { device: Device; status?: string }) {
+export default function InspectDevice({ device }: { device: Device }) {
     // Vult een bestaande keuring opnieuw in; ontbrekende controles beginnen op false.
     const previous = device.inspection;
     const { data, setData, patch, processing, errors, hasErrors } = useForm<InspectionForm>({
@@ -69,7 +75,7 @@ export default function InspectDevice({ device, status }: { device: Device; stat
     // Slaat de checklist, opmerkingen en gekozen keuringsstatus op voor dit apparaat.
     const submit: FormEventHandler = (event) => {
         event.preventDefault();
-        patch(route('inspector.devices.update', device.id), { preserveScroll: true });
+        patch(route('inspector.devices.update', device.id), { preserveScroll: 'errors' });
     };
 
     return (
@@ -85,42 +91,41 @@ export default function InspectDevice({ device, status }: { device: Device; stat
                 </Link>
                 <h1 className="mt-5 text-3xl font-bold">Apparaat keuren</h1>
                 <p className="mt-2 text-slate-600">Controleer het apparaat en leg je beoordeling vast.</p>
-                {status && (
-                    <div role="status" className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
-                        {status}
-                    </div>
-                )}
                 <div className="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_1.3fr]">
                     <section aria-labelledby="device-title" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                         <p className="text-sm font-medium text-emerald-700">Keuring · #{device.id}</p>
                         <h2 id="device-title" className="mt-1 text-xl font-bold">
                             {device.brand} {device.model}
                         </h2>
-                        {device.photo_url ? (
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <button
-                                        type="button"
-                                        className="mt-5 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-left focus-visible:outline-2 focus-visible:outline-emerald-600"
-                                    >
-                                        <img src={device.photo_url} alt={device.brand + ' ' + device.model} className="h-52 w-full object-contain" />
-                                        <span className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-600">
-                                            <ZoomIn className="size-4" aria-hidden="true" /> Klik op de foto om in te zoomen
-                                        </span>
-                                    </button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-3xl">
-                                    <DialogTitle>
-                                        {device.brand} {device.model}
-                                    </DialogTitle>
-                                    <DialogDescription>Vergrote foto van het aangemelde apparaat.</DialogDescription>
-                                    <img
-                                        src={device.photo_url}
-                                        alt={device.brand + ' ' + device.model}
-                                        className="max-h-[75vh] w-full object-contain"
-                                    />
-                                </DialogContent>
-                            </Dialog>
+                        {device.photo_urls.length > 0 ? (
+                            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {device.photo_urls.map((photoUrl, index) => (
+                                    <Dialog key={photoUrl}>
+                                        <DialogTrigger asChild>
+                                            <button
+                                                type="button"
+                                                className="mt-5 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-left focus-visible:outline-2 focus-visible:outline-emerald-600"
+                                            >
+                                                <img src={photoUrl} alt={device.brand + ' ' + device.model} className="h-52 w-full object-contain" />
+                                                <span className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-600">
+                                                    <ZoomIn className="size-4" aria-hidden="true" /> Foto {index + 1} vergroten
+                                                </span>
+                                            </button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-3xl">
+                                            <DialogTitle>
+                                                {device.brand} {device.model}
+                                            </DialogTitle>
+                                            <DialogDescription>Vergrote foto van het aangemelde apparaat.</DialogDescription>
+                                            <img
+                                                src={photoUrl}
+                                                alt={device.brand + ' ' + device.model}
+                                                className="max-h-[75vh] w-full object-contain"
+                                            />
+                                        </DialogContent>
+                                    </Dialog>
+                                ))}
+                            </div>
                         ) : (
                             <div className="mt-5 flex h-44 flex-col items-center justify-center gap-2 rounded-xl bg-slate-50 text-slate-500">
                                 <ImageOff className="size-8" aria-hidden="true" /> Geen foto beschikbaar
@@ -130,6 +135,9 @@ export default function InspectDevice({ device, status }: { device: Device; stat
                             {[
                                 ['Soort', device.type === 'laptops' ? 'Laptop' : device.type === 'telefoon' ? 'Telefoon' : 'Console'],
                                 ['Apparaat ID', '#' + device.id],
+                                ['Klantnaam', device.customer_name || 'Onbekend'],
+                                ['Klant-ID', String(device.user_id)],
+                                ['E-mail', device.customer_email || 'Onbekend'],
                                 ['Serienummer', device.serial_number],
                                 ['Aangemeld op', new Date(device.created_at).toLocaleDateString('nl-NL')],
                                 ['Conditie', device.condition],
@@ -139,10 +147,16 @@ export default function InspectDevice({ device, status }: { device: Device; stat
                                     new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(Number(device.asking_price)),
                                 ],
                                 ['Huidige status', device.status],
+                                ['Bijgewerkt op', new Date(device.updated_at).toLocaleString('nl-NL')],
+                                [
+                                    'Laatst gekeurd op',
+                                    device.inspected_at ? new Date(device.inspected_at).toLocaleString('nl-NL') : 'Nog niet gekeurd',
+                                ],
+                                ['Keurmeester-ID', device.inspected_by_user_id ? String(device.inspected_by_user_id) : 'Nog niet gekeurd'],
                             ].map(([label, value]) => (
                                 <div key={label} className="grid grid-cols-[7rem_1fr] gap-3">
                                     <dt className="text-slate-500">{label}</dt>
-                                    <dd className="font-medium break-words">{value}</dd>
+                                    <dd className="font-medium break-words whitespace-pre-wrap">{value}</dd>
                                 </div>
                             ))}
                         </dl>

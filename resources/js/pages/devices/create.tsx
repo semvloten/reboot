@@ -20,7 +20,7 @@ type DeviceForm = {
     photos: File[];
 };
 
-export default function CreateDevice({ status }: { status?: string }) {
+export default function CreateDevice() {
     const { auth } = usePage<SharedData>().props;
     const { data, setData, post, processing, errors, reset, progress } = useForm<DeviceForm>({
         type: '',
@@ -48,7 +48,7 @@ export default function CreateDevice({ status }: { status?: string }) {
         event.preventDefault();
         post(route('devices.store'), {
             forceFormData: true,
-            preserveScroll: true,
+            preserveScroll: 'errors',
             onSuccess: () => {
                 reset();
                 setPhotoError('');
@@ -71,11 +71,6 @@ export default function CreateDevice({ status }: { status?: string }) {
                 <p className="mt-2 text-slate-600">
                     Meld je apparaat aan op naam van {auth.user.name} ({auth.user.email}).
                 </p>
-                {status && (
-                    <div role="status" className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
-                        {status}
-                    </div>
-                )}
                 <form onSubmit={submit} className="mt-6 space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
                     <fieldset disabled={processing} className="space-y-6">
                         <div className="space-y-3">

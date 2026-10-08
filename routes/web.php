@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/mijn-apparaten/{device}/foto', [DeviceController::class, 'photo'])->name('devices.photo');
     Route::get('/mijn-apparaten', [DeviceController::class, 'index'])->name('devices.index');
+    Route::get('/mijn-reserveringen', [DeviceController::class, 'reservations'])->name('devices.reservations');
 
     Route::get('/apparaat-aanmelden', [DeviceController::class, 'create'])->name('devices.create');
     Route::post('/apparaat-aanmelden', [DeviceController::class, 'store'])->name('devices.store');
