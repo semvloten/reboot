@@ -3,6 +3,13 @@
 use App\Http\Controllers\DeviceController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Onderdeel: Verbindt winkel-, klant- en keurmeesterfuncties aan routes met authenticatie en rolmiddleware.
+ * Eisen: RV-01, RV-02, FE-13, TE-06.
+ * Ontwerp: T-24 (roltoegang).
+ * Bouw: T-25 (roltoegang), T-31 (structuur).
+ * Geplande controle: T-26, T-32.
+ */
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return to_route('dashboard');

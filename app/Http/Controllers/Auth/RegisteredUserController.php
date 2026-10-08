@@ -14,6 +14,13 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Onderdeel: Accountaanmaak met gevalideerde invoer, wachtwoordhash en gecontroleerde roltoekenning.
+ * Eisen: FE-01, FE-13, RV-02, RV-03, RV-07, TE-03, TE-04.
+ * Ontwerp: T-03 (accountaanmaak), T-24 (roltoegang).
+ * Bouw: T-04 (accountaanmaak), T-25 (roltoegang), T-27 (wachtwoordopslag), T-29 (invoercontrole).
+ * Geplande controle: T-05, T-26, T-28, T-30.
+ */
 class RegisteredUserController extends Controller
 {
     /**

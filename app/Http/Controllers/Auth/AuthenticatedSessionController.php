@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Onderdeel: Inloggen na succesvolle authenticatie, sessie vernieuwen en veilig uitloggen.
+ * Eisen: TE-04, TE-05, RV-02, RV-07.
+ * Bouw: T-29 (invoercontrole en veilige verwerking).
+ * Geplande controle: T-30.
+ */
 class AuthenticatedSessionController extends Controller
 {
     /**

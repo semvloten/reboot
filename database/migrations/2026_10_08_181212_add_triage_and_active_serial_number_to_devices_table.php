@@ -5,6 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Onderdeel: Prioriteit/toewijzing opslaan en via een unieke database-index slechts een actief apparaat per serienummer toestaan.
+ * Eisen: FE-06, RV-04, TE-02.
+ * Bouw: T-13 (keurmeesteroverzicht), T-34 (verbeteringen).
+ * Geplande controle: T-14, T-33.
+ * Toelichting: Prioriteren/toewijzen komt uit projectbriefing hoofdstuk 4; geen afzonderlijk eis- of taaknummer in de planning.
+ */
 return new class extends Migration
 {
     public function up(): void

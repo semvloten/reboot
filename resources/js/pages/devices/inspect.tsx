@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Apparaatgegevens en checklist voor batterij, scherm, aansluitingen en reset; goedkeuren, afkeuren of herstel nodig met opmerkingen.
+ * Eisen: FE-06, FE-07, FE-08, FE-09, FE-10, RV-06, RV-07.
+ * Ontwerp: T-12 (overzicht en checklist), T-15 (keuringsstatussen).
+ * Bouw: T-13 (checklist), T-16 (keuringsstatussen).
+ * Geplande controle: T-14, T-17.
+ */
+
 import InputError from '@/components/input-error';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';

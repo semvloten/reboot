@@ -1,3 +1,12 @@
+/**
+ * Onderdeel: Keurmeesteroverzicht met filters, statuslabels, prioriteit en toewijzing.
+ * Eisen: FE-06, FE-13, RV-02, RV-06, RV-07.
+ * Ontwerp: T-12 (apparatenoverzicht), T-24 (roltoegang).
+ * Bouw: T-13 (overzicht), T-25 (roltoegang).
+ * Geplande controle: T-14, T-26.
+ * Toelichting: Prioriteren/toewijzen komt uit projectbriefing hoofdstuk 4; geen afzonderlijk eis- of taaknummer in de planning.
+ */
+
 import InputError from '@/components/input-error';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';

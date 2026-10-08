@@ -1,3 +1,10 @@
+{{--
+Onderdeel: HTML-basis voor de Laravel/Inertia-webapp met viewport voor telefoon, tablet en computer.
+Eisen: RV-01, RV-06, TE-01, TE-06.
+Bouw: T-01 (applicatiebasis), T-31 (structuur).
+Geplande controle: T-02, T-32.
+--}}
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

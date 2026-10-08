@@ -4,6 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Onderdeel: Checklist, opmerkingen, uitvoerende keurmeester en keuringsdatum bij het apparaat opslaan.
+ * Eisen: FE-05, FE-07, TE-02.
+ * Bouw: T-10 (keuringsopmerkingen), T-13 (checklist).
+ * Geplande controle: T-11, T-14.
+ */
 return new class extends Migration
 {
     public function up(): void

@@ -1,3 +1,12 @@
+/**
+ * Onderdeel: Winkelgrid met filters, productspecificaties en lege-resultatenmelding; server levert uitsluitend eerder goedgekeurde producten.
+ * Eisen: FE-11, RV-05, RV-06, RV-07.
+ * Ontwerp: T-18 (winkelweergave).
+ * Bouw: T-19 (winkelweergave).
+ * Geplande controle: T-20.
+ * Toelichting: Gereserveerde producten blijven zichtbaar met status gereserveerd en zijn niet opnieuw te reserveren (FE-12).
+ */
+
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';
 import { Head, Link, useRemember } from '@inertiajs/react';

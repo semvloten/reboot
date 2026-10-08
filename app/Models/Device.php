@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Onderdeel: Apparaatgegevens, checklist en relaties met verkoper, keurmeester en reserverende klant.
+ * Eisen: FE-02, FE-03, FE-07, FE-12, TE-02, TE-06.
+ * Bouw: T-07 (aanmelding), T-13 (checklist), T-22 (reservering), T-31 (structuur).
+ * Geplande controle: T-08, T-14, T-23, T-32.
+ */
 class Device extends Model
 {
     /** @use HasFactory<DeviceFactory> */

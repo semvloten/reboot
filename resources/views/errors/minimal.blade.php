@@ -1,3 +1,10 @@
+{{--
+Onderdeel: Begrijpelijke Nederlandse foutpagina's voor onder andere geen toegang, niet gevonden en conflicterende acties.
+Eisen: FE-13, RV-06, RV-07.
+Bouw: T-25 (roltoegang), T-34 (foutafhandeling verbeteren).
+Geplande controle: T-26, T-33.
+--}}
+
 @php
     $code = trim($__env->yieldContent('code')) ?: '500';
     [$title, $message] = match ($code) {

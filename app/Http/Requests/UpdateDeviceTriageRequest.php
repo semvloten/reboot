@@ -5,6 +5,13 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Onderdeel: Controleert prioriteit en toewijzing aan een bestaande keurmeester.
+ * Eisen: FE-06, FE-13, RV-02, RV-07, TE-04.
+ * Bouw: T-13 (keurmeesteroverzicht), T-25 (roltoegang), T-29 (invoercontrole).
+ * Geplande controle: T-14, T-26, T-30.
+ * Toelichting: Prioriteren/toewijzen komt uit projectbriefing hoofdstuk 4; geen afzonderlijk eis- of taaknummer in de planning.
+ */
 class UpdateDeviceTriageRequest extends FormRequest
 {
     public function authorize(): bool

@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Onderdeel: Controleert inlogvelden en bestaande inloggegevens; begrenst mislukte pogingen.
+ * Eisen: TE-04, TE-05, RV-07.
+ * Bouw: T-29 (invoercontrole en veilige verwerking).
+ * Geplande controle: T-30.
+ */
 class LoginRequest extends FormRequest
 {
     /**

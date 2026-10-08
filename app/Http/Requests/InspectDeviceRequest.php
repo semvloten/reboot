@@ -5,6 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Onderdeel: Controleert checklist, verplichte opmerkingen en keuringsstatus; goedkeuren vereist geslaagde controles.
+ * Eisen: FE-07, FE-08, FE-09, FE-10, FE-13, RV-02, RV-07, TE-04.
+ * Bouw: T-13 (checklist), T-16 (keuringsstatussen), T-25 (roltoegang), T-29 (invoercontrole).
+ * Geplande controle: T-14, T-17, T-26, T-30.
+ */
 class InspectDeviceRequest extends FormRequest
 {
     public function authorize(): bool

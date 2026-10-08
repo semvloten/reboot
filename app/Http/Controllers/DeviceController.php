@@ -19,8 +19,21 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
+/**
+ * Onderdeel: Verwerkt apparaten, keuringen, winkelweergave en reserveringen; validatie staat in aparte requests.
+ * Eisen: TE-06.
+ * Bouw: T-31 (code- en mappenstructuur).
+ * Geplande controle: T-32.
+ */
 class DeviceController extends Controller
 {
+    /**
+     * Winkeloverzicht; afgekeurde en nog niet goedgekeurde apparaten worden uitgesloten.
+     * Eisen: FE-11, RV-05.
+     * Planning: T-18 (ontwerp), T-19 (bouw).
+     * Geplande controle: T-20.
+     * Gereserveerde, eerder goedgekeurde producten blijven zichtbaar maar zijn niet opnieuw beschikbaar (FE-12).
+     */
     public function shop(Request $request): Response
     {
         return Inertia::render('dashboard', [
@@ -38,6 +51,12 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Productdetails en keuringsrapport; alleen klanten kunnen andermans beschikbare apparaat reserveren.
+     * Eisen: FE-11, FE-12, FE-13, RV-02, RV-05.
+     * Planning: T-18/T-19 (winkel), T-21/T-22 (reserveren), T-24/T-25 (roltoegang), T-34 (zelfreservering).
+     * Geplande controle: T-20, T-23, T-26.
+     */
     public function shopShow(Request $request, Device $device): Response
     {
         abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
@@ -58,6 +77,13 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Checkout voor het bevestigen van een reservering; blokkeert eigen en al gereserveerde apparaten.
+     * Eisen: FE-12, FE-13, RV-02, RV-07.
+     * Planning: T-21 (ontwerp), T-22 (bouw), T-25 (roltoegang), T-34 (zelfreservering).
+     * Geplande controle: T-23, T-26.
+     * De checkout is een betaal-demo; echte betalingen vallen buiten de MVP-afbakening.
+     */
     public function checkout(Request $request, Device $device): Response|RedirectResponse
     {
         abort_unless($request->user()->role === 'customer', 403);
@@ -76,6 +102,12 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Reservering atomair vastleggen, zodat hetzelfde product niet door twee klanten wordt gereserveerd.
+     * Eisen: FE-12, FE-13, RV-02, RV-07.
+     * Planning: T-22 (bouw reserveren), T-25 (roltoegang), T-34 (zelfreservering blokkeren).
+     * Geplande controle: T-23, T-26.
+     */
     public function reserve(Request $request, Device $device): RedirectResponse
     {
         abort_unless($request->user()->role === 'customer', 403);
@@ -100,6 +132,12 @@ class DeviceController extends Controller
             : 'Dit product is niet meer beschikbaar. Er is geen reservering gemaakt.');
     }
 
+    /**
+     * Productfoto alleen beschikbaar stellen als het apparaat eerder is goedgekeurd.
+     * Eisen: FE-11, RV-05.
+     * Planning: T-19 (bouw winkelweergave).
+     * Geplande controle: T-20.
+     */
     public function shopPhoto(Request $request, Device $device): StreamedResponse
     {
         abort_unless(in_array($device->status, ['goedgekeurd', 'gereserveerd'], true), 404);
@@ -116,6 +154,13 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Keurmeester toont aangemelde apparaten, geordend op prioriteit en aanmelddatum, met toewijzing.
+     * Eisen: FE-06, RV-02.
+     * Planning: T-12 (ontwerp), T-13 (bouw overzicht).
+     * Geplande controle: T-14.
+     * Prioriteren en toewijzen: projectbriefing hoofdstuk 4; geen apart eis- of taaknummer in de planning.
+     */
     public function inspectorIndex(Request $request): Response
     {
         return Inertia::render('devices/inspector', [
@@ -138,6 +183,13 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Gevalideerde prioriteit en toewijzing opslaan; gereserveerde apparaten niet opnieuw toewijzen.
+     * Eisen: FE-06, FE-13, RV-02, RV-07, TE-04.
+     * Planning: T-13 (bouw overzicht), T-25 (roltoegang), T-29 (invoercontrole).
+     * Geplande controle: T-14, T-26, T-30.
+     * Prioriteren en toewijzen: projectbriefing hoofdstuk 4; geen apart eis- of taaknummer in de planning.
+     */
     public function updateTriage(UpdateDeviceTriageRequest $request, Device $device): RedirectResponse
     {
         DB::transaction(function () use ($request, $device): void {
@@ -154,6 +206,12 @@ class DeviceController extends Controller
         return to_route('inspector.devices.index')->with('status', 'De prioriteit en toewijzing zijn opgeslagen.');
     }
 
+    /**
+     * Geselecteerd apparaat met verkopergegevens en eerdere checklist openen voor keuring.
+     * Eisen: FE-06, FE-07, RV-02, RV-07.
+     * Planning: T-12 (ontwerp), T-13 (bouw overzicht en checklist).
+     * Geplande controle: T-14.
+     */
     public function inspect(Device $device): Response
     {
         abort_if($device->status === 'gereserveerd', 409, 'Een gereserveerd apparaat kan niet opnieuw worden gekeurd.');
@@ -173,6 +231,13 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Checklist, keuringsopmerkingen, keurmeester, datum en status betrouwbaar samen opslaan.
+     * Eisen: FE-07, FE-08, FE-09, FE-10, RV-04, RV-05, RV-07, TE-04.
+     * Planning: T-13 (checklist), T-15/T-16 (ontwerp/bouw keuringsstatussen), T-29 (invoercontrole).
+     * Geplande controle: T-14, T-17, T-30.
+     * FE-08: goedgekeurd; FE-09: afgekeurd; FE-10: onderhoud nodig. Alleen goedgekeurd komt beschikbaar in de winkel.
+     */
     public function updateInspection(InspectDeviceRequest $request, Device $device): RedirectResponse
     {
         try {
@@ -195,6 +260,12 @@ class DeviceController extends Controller
         return to_route('inspector.devices.index')->with('status', 'De keuring is opgeslagen. Het apparaat is '.$request->validated('status').'.');
     }
 
+    /**
+     * Alleen eigen apparaten met huidige status en keuringsopmerkingen tonen aan de klant.
+     * Eisen: FE-04, FE-05, FE-13, RV-02.
+     * Planning: T-09 (ontwerp), T-10 (bouw status en opmerkingen), T-25 (roltoegang).
+     * Geplande controle: T-11, T-26.
+     */
     public function index(Request $request): Response
     {
         abort_unless($request->user()->role === 'customer', 403);
@@ -213,6 +284,12 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Alleen reserveringen van de ingelogde klant ophalen.
+     * Eisen: FE-12, FE-13, RV-02.
+     * Planning: T-21 (ontwerp), T-22 (bouw reserveren), T-25 (roltoegang).
+     * Geplande controle: T-23, T-26.
+     */
     public function reservations(Request $request): Response
     {
         abort_unless($request->user()->role === 'customer', 403);
@@ -232,6 +309,12 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Privaat opgeslagen apparaatfoto's alleen aan de eigenaar of een keurmeester leveren.
+     * Eisen: FE-02, FE-06, FE-13, RV-02, RV-05.
+     * Planning: T-07 (aanmelding), T-13 (keuring), T-25 (roltoegang).
+     * Geplande controle: T-08, T-14, T-26.
+     */
     public function photo(Request $request, Device $device): StreamedResponse
     {
         abort_unless($request->user()->role === 'inspector' || ($request->user()->role === 'customer' && $device->user_id === $request->user()->id), 404);
@@ -248,6 +331,12 @@ class DeviceController extends Controller
         ]);
     }
 
+    /**
+     * Aanmeldformulier uitsluitend voor klanten openen.
+     * Eisen: FE-02, FE-03, FE-13, RV-02.
+     * Planning: T-06 (ontwerp), T-07 (bouw aanmelding), T-25 (roltoegang).
+     * Geplande controle: T-08, T-26.
+     */
     public function create(Request $request): Response
     {
         abort_unless($request->user()->role === 'customer', 403, 'Alleen klanten kunnen apparaten aanmelden.');
@@ -255,6 +344,13 @@ class DeviceController extends Controller
         return Inertia::render('devices/create');
     }
 
+    /**
+     * Gevalideerde apparaatgegevens en foto's opslaan met de ingelogde klant als eigenaar.
+     * Eisen: FE-02, FE-03, RV-04, RV-07, TE-04.
+     * Planning: T-07 (bouw aanmelding), T-29 (invoercontrole en verwerking).
+     * Geplande controle: T-08, T-30.
+     * Dubbele actieve serienummers geven een veldmelding; mislukte opslag ruimt reeds opgeslagen foto's op.
+     */
     public function store(StoreDeviceRequest $request): RedirectResponse
     {
         $data = $request->safe()->except('photos');

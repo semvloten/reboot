@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Herbruikbare weergave van keuringsdatum, checklist en opmerkingen voor verkopers en kopers.
+ * Eisen: FE-05, FE-07, FE-11, RV-06, TE-06.
+ * Ontwerp: T-09 (keuringsopmerkingen), T-12 (checklist), T-18 (winkelweergave).
+ * Bouw: T-10 (opmerkingen), T-13 (checklist), T-19 (winkel), T-31 (herbruikbare onderdelen).
+ * Geplande controle: T-11, T-14, T-20, T-32.
+ */
+
 export const inspectionChecks = [
     ['works', 'Apparaat werkt volledig'],
     ['accessories_work', 'Accessoires werken goed'],

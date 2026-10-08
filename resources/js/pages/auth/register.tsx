@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Registratieformulier met veldmeldingen; alleen keurmeesters kunnen de keurmeesteroptie zien.
+ * Eisen: FE-01, FE-13, RV-02, RV-06, RV-07.
+ * Ontwerp: T-03 (accountaanmaak), T-24 (roltoegang).
+ * Bouw: T-04 (accountaanmaak), T-25 (roltoegang).
+ * Geplande controle: T-05, T-26.
+ */
+
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';

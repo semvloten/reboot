@@ -4,6 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Onderdeel: Databasetabellen voor accounts, wachtwoordherstel en sessies; de applicatie slaat wachtwoordhashes op.
+ * Eisen: FE-01, RV-03, TE-02, TE-03.
+ * Bouw: T-01 (databasebasis), T-04 (accountaanmaak), T-27 (wachtwoordopslag).
+ * Geplande controle: T-02, T-05, T-28.
+ */
 return new class extends Migration
 {
     /**

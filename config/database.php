@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Str;
 
+/**
+ * Onderdeel: Databaseverbindingen; Reboot gebruikt MySQL/MariaDB via DB_CONNECTION en de overige DB-instellingen in .env.
+ * Eisen: TE-02.
+ * Bouw: T-01 (database instellen).
+ * Geplande controle: T-02.
+ */
 return [
 
     /*

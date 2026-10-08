@@ -10,6 +10,12 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Onderdeel: Routes voor accountaanmaak, inloggen en uitloggen; accountbeveiliging wordt afgehandeld door authcontrollers.
+ * Eisen: FE-01, RV-02, TE-04, TE-05, TE-06.
+ * Bouw: T-04 (accountaanmaak), T-29 (veilige verwerking), T-31 (structuur).
+ * Geplande controle: T-05, T-30, T-32.
+ */
 Route::get('register', [RegisteredUserController::class, 'create'])
     ->name('register');
 

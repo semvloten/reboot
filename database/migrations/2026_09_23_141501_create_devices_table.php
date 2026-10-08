@@ -4,6 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Onderdeel: Apparaten met eigenaar, uniek ID en merk, model, conditie, accessoires, vraagprijs en foto's opslaan.
+ * Eisen: FE-02, FE-03, RV-04, TE-02.
+ * Bouw: T-07 (apparaat aanmelden en gegevens opslaan).
+ * Geplande controle: T-08.
+ * Toelichting: De latere migratie voor active_serial_number beperkt serienummeruniciteit tot actieve apparaten.
+ */
 return new class extends Migration
 {
     public function up(): void

@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Aanmeldformulier voor type, merk, model, serienummer, conditie, accessoires, vraagprijs en foto's.
+ * Eisen: FE-02, FE-03, RV-04, RV-06, RV-07, TE-04.
+ * Ontwerp: T-06 (apparaat aanmelden en gegevens).
+ * Bouw: T-07 (apparaat aanmelden), T-29 (invoercontrole).
+ * Geplande controle: T-08, T-30.
+ */
+
 import InputError from '@/components/input-error';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';

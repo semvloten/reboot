@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Mijn reserveringen met eigen gereserveerde apparaten en melding bij een lege lijst.
+ * Eisen: FE-12, RV-02, RV-06, RV-07.
+ * Ontwerp: T-21 (reserveren).
+ * Bouw: T-22 (reserveren).
+ * Geplande controle: T-23.
+ */
+
 import RebootNavbar from '@/components/reboot-navbar';
 import { Head, Link } from '@inertiajs/react';
 

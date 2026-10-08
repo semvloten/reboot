@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Productdetails met keuringsrapport en reserveringsknop; eigen of gereserveerde apparaten kunnen niet worden gereserveerd.
+ * Eisen: FE-11, FE-12, RV-05, RV-06, RV-07.
+ * Ontwerp: T-18 (winkelweergave), T-21 (reserveren).
+ * Bouw: T-19 (winkelweergave), T-22 (reserveren), T-34 (zelfreservering blokkeren).
+ * Geplande controle: T-20, T-23.
+ */
+
 import InspectionReport, { type Inspection } from '@/components/inspection-report';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';

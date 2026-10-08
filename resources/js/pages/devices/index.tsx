@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Mijn apparaten: eigen status met kleur en tekst, keuringsopmerkingen en melding bij een lege lijst.
+ * Eisen: FE-04, FE-05, RV-02, RV-06, RV-07.
+ * Ontwerp: T-09 (status en keuringsopmerkingen).
+ * Bouw: T-10 (status en keuringsopmerkingen).
+ * Geplande controle: T-11.
+ */
+
 import InspectionReport, { type Inspection } from '@/components/inspection-report';
 import RebootNavbar from '@/components/reboot-navbar';
 import { Head, Link } from '@inertiajs/react';

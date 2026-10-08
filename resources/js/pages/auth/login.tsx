@@ -1,3 +1,10 @@
+/**
+ * Onderdeel: Inlogformulier met foutmeldingen; de server controleert de inloggegevens.
+ * Eisen: TE-04, TE-05, RV-06, RV-07.
+ * Bouw: T-29 (invoercontrole en veilige verwerking).
+ * Geplande controle: T-30.
+ */
+
 import { Head, useForm } from '@inertiajs/react';
 import { ArrowRight, Check, LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';

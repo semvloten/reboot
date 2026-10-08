@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Onderdeel: Bestandsopslag voor apparaatfoto's; toegang tot foto's wordt gecontroleerd in DeviceController.
+ * Eisen: FE-02, FE-13, RV-02, RV-05, TE-06.
+ * Bouw: T-07 (aanmelding), T-25 (roltoegang), T-31 (structuur).
+ * Geplande controle: T-08, T-26, T-32.
+ */
 return [
 
     /*

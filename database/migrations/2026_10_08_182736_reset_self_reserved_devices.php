@@ -3,6 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Onderdeel: Eerder gemaakte zelfreserveringen herstellen door het apparaat weer beschikbaar te maken.
+ * Eisen: FE-12, TE-02.
+ * Bouw: T-34 (gevonden problemen oplossen).
+ * Geplande controle: T-23, T-33.
+ */
 return new class extends Migration
 {
     public function up(): void

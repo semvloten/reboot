@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Gedeelde responsieve accountlayout met titel, uitleg en Reboot-navigatie.
+ * Eisen: FE-01, RV-01, RV-06, TE-06.
+ * Ontwerp: T-03 (accountaanmaak).
+ * Bouw: T-04 (accountaanmaak), T-31 (gedeelde layout).
+ * Geplande controle: T-05, T-32.
+ */
+
 import RebootNavbar from '@/components/reboot-navbar';
 import { ReactNode } from 'react';
 

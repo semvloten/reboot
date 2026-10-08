@@ -1,3 +1,12 @@
+/**
+ * Onderdeel: Checkoutpagina die een reservering bevestigt; de betaalinterface is een demo zonder echte betaling of betaalprovider.
+ * Eisen: FE-12, RV-06, RV-07.
+ * Ontwerp: T-21 (reserveren).
+ * Bouw: T-22 (reserveren).
+ * Geplande controle: T-23.
+ * Toelichting: Echte online betalingen vallen buiten de MVP-afbakening; de checkout is behouden op verzoek.
+ */
+
 import RebootNavbar from '@/components/reboot-navbar';
 import { Button } from '@/components/ui/button';
 import { Head, Link, useForm } from '@inertiajs/react';

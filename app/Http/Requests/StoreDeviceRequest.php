@@ -5,6 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Onderdeel: Valideert apparaatgegevens, foto's en uniek actief serienummer; alleen klanten mogen aanmelden.
+ * Eisen: FE-02, FE-03, FE-13, RV-02, RV-04, RV-07, TE-04.
+ * Bouw: T-07 (apparaat aanmelden), T-25 (roltoegang), T-29 (invoercontrole).
+ * Geplande controle: T-08, T-26, T-30.
+ */
 class StoreDeviceRequest extends FormRequest
 {
     public function authorize(): bool

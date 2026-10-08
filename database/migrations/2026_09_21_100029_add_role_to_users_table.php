@@ -4,7 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+/**
+ * Onderdeel: Accountrol opslaan met klant als standaardrol.
+ * Eisen: FE-13, RV-02, TE-02.
+ * Ontwerp: T-24 (roltoegang).
+ * Bouw: T-25 (roltoegang).
+ * Geplande controle: T-26.
+ */
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

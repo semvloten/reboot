@@ -1,3 +1,11 @@
+/**
+ * Onderdeel: Responsieve navigatie met links passend bij de accountrol; servercontrole blijft nodig voor toegang.
+ * Eisen: FE-13, RV-02, RV-06, TE-06.
+ * Ontwerp: T-24 (roltoegang).
+ * Bouw: T-25 (roltoegang), T-31 (gedeelde navigatie).
+ * Geplande controle: T-26, T-32.
+ */
+
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { type SharedData } from '@/types';
