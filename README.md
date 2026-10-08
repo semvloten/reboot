@@ -121,3 +121,19 @@ php artisan serve --host=localhost --port=8000
 Open **[http://localhost:8000](http://localhost:8000)** en log in met de meegeleverde demo-inloggegevens. Houd MySQL en de Artisan-terminal geopend. Met **Ctrl+C** stop je de app.
 
 Een klant kan apparaten aanmelden en apparaten van andere klanten reserveren. Een keurmeester kan via **Apparaten keuren** aanmeldingen prioriteren, toewijzen en beoordelen.
+
+## Demoaccounts
+
+Na het importeren van de meegeleverde database kun je voor de schooldemonstratie met deze accounts inloggen:
+
+| Naam | E-mailadres | Rol |
+| --- | --- | --- |
+| Keurman | keurman@gmail.com | Keurmeester (`inspector`) |
+| Henk | henk@gmail.com | Klant (`customer`) |
+| Gerrit | gerrit@gmail.com | Klant (`customer`) |
+| John Pork | johnpork@gmail.com | Klant (`customer`) |
+
+Het wachtwoord voor alle vier de demoaccounts is: **`Vanvloten1!`**.
+
+Gebruik bijvoorbeeld Henk als verkoper, Keurman voor de keuring en Gerrit als koper. Een klant kan zijn eigen apparaten niet reserveren.
+
