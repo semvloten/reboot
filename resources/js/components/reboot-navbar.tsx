@@ -25,7 +25,7 @@ export default function RebootNavbar({ showLogin = true, showRegister = true, sh
     const isCurrentPage = (routeName: string) => currentPath === new URL(route(routeName), 'http://localhost').pathname;
     const canShowRegister = showRegister && auth.user?.role === 'inspector' && !isCurrentPage('register');
     const canShowLogout = showLogout && !!auth.user;
-    const isAccountPage = isCurrentPage('login') || isCurrentPage('register');
+    const isAccountPage = isCurrentPage('login') || isCurrentPage('register') || isCurrentPage('password.request');
     const navigationLinks = [
         { routeName: 'login', label: 'Login', visible: showLogin && !auth.user },
         { routeName: 'shop.index', label: 'Winkel', visible: !isAccountPage },
